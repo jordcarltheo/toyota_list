@@ -56,7 +56,7 @@ export default function AuthPage() {
             </CardHeader>
             <CardContent className="text-center">
               <p className="text-gray-600 mb-6">
-                We've sent a magic link to <strong>{email}</strong>. 
+                We&apos;ve sent a magic link to <strong>{email}</strong>. 
                 Click the link in your email to sign in.
               </p>
               <Button 
@@ -83,7 +83,7 @@ export default function AuthPage() {
           <CardHeader className="text-center">
             <CardTitle className="text-2xl">Sign In to Your Account</CardTitle>
             <p className="text-gray-600">
-              Enter your email address and we'll send you a magic link to sign in.
+              Enter your email address and we&apos;ll send you a magic link to sign in.
             </p>
           </CardHeader>
           <CardContent>
@@ -121,7 +121,7 @@ export default function AuthPage() {
             
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
-                Don't have an account?{' '}
+                Don&apos;t have an account?{' '}
                 <span className="text-blue-600">
                   Just sign in with your email to create one automatically.
                 </span>
