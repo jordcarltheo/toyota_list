@@ -25,7 +25,7 @@ export default function SellPage() {
     city: '',
     state: '',
     postalCode: '',
-    country: 'US' as const // default
+    country: 'US' as 'US' | 'CA' | 'MX' // default
   })
   const [loading, setLoading] = useState(false)
 
@@ -295,7 +295,7 @@ export default function SellPage() {
                 </label>
                 <Select
                   value={form.country}
-                  onValueChange={(value) => setForm(f => ({ ...f, country: value }))}
+                  onValueChange={(value: 'US' | 'CA' | 'MX') => setForm(f => ({ ...f, country: value }))}
                 >
                   <SelectTrigger>
                     <SelectValue />
