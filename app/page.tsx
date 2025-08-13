@@ -3,7 +3,6 @@ import { FeaturedListings } from '@/components/home/featured-listings'
 import { Categories } from '@/components/home/categories'
 import { HowItWorks } from '@/components/home/how-it-works'
 import TRDBanner from '@/components/TRDBanner'
-import { supabaseServer } from '@/lib/supabase-server'
 import Link from 'next/link'
 
 export default async function HomePage({ 
@@ -11,26 +10,9 @@ export default async function HomePage({
 }: { 
   searchParams: { country?: string } 
 }) {
-  const supabase = supabaseServer()
+  // For now, use empty listings until database is properly set up
+  const listings: any[] = []
   const selected = (searchParams?.country || 'ALL').toUpperCase()
-
-  let query = supabase
-    .from('listings')
-    .select(`
-      *,
-      listing_photos!inner(path, width, height, sort_order),
-      profiles!listings_user_id_fkey(id, full_name, role, created_at)
-    `)
-    .eq('status', 'active')
-    .order('created_at', { ascending: false })
-    .limit(24)
-
-  if (selected !== 'ALL') {
-    query = query.eq('location_country', selected)
-  }
-
-  const { data } = await query
-  const listings = data || []
 
   return (
     <div className="space-y-10">
