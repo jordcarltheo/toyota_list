@@ -86,7 +86,7 @@ pnpm db:push
 pnpm seed
 ```
 
-This creates 25 demo Toyota listings with sample data from across North America.
+This creates sample Toyota listings for testing purposes.
 
 ### 6. Run the Development Server
 
@@ -113,7 +113,7 @@ toyota-list/
 ├── lib/                    # Utility functions
 ├── types/                  # TypeScript types
 ├── supabase/               # Database migrations
-├── scripts/                # Seed script
+├── scripts/                # Database scripts
 └── hooks/                  # Custom React hooks
 ```
 
