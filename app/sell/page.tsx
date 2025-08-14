@@ -192,12 +192,16 @@ export default function SellPage() {
                 <Input
                   type="number"
                   value={form.mileage}
-                  onChange={(e) => setForm(f => ({ ...f, mileage: parseInt(e.target.value) }))}
+                  onChange={(e) => setForm(f => ({ ...f, mileage: parseInt(e.target.value) || 0 }))}
                   min="0"
-                  step="1000"
+                  max="9999999"
+                  step="1"
                   placeholder="50000"
                   required
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  Enter the total mileage (0 - 9,999,999)
+                </p>
               </div>
 
               {/* Vehicle Details */}
