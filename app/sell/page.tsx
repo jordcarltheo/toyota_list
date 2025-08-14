@@ -25,7 +25,10 @@ export default function SellPage() {
     city: '',
     state: '',
     postalCode: '',
-    country: 'US' as 'US' | 'CA' | 'MX' // default
+    country: 'US' as 'US' | 'CA' | 'MX', // default
+    contactName: '',
+    contactEmail: '',
+    contactPhone: ''
   })
   const [loading, setLoading] = useState(false)
 
@@ -36,23 +39,19 @@ export default function SellPage() {
     try {
       const supabase = createBrowserSupabaseClient()
       
-      // Get current user
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) {
-        alert('Please log in to create a listing')
-        return
-      }
+      // Generate a temporary user ID for anonymous listings
+      const tempUserId = `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 
       // Create listing
       const { data, error } = await supabase
         .from('listings')
         .insert({
-          user_id: user.id,
+          user_id: tempUserId,
           title: form.title,
           model: form.model,
           year: form.year,
           price: form.price,
-          description: form.description,
+          description: `${form.description}\n\nContact Information:\nName: ${form.contactName}\nEmail: ${form.contactEmail}${form.contactPhone ? `\nPhone: ${form.contactPhone}` : ''}`,
           mileage: form.mileage,
           condition: form.condition,
           body_type: form.body_type,
@@ -93,6 +92,9 @@ export default function SellPage() {
           </h1>
           <p className="text-lg text-gray-600">
             Create a listing to sell your Toyota vehicle
+          </p>
+          <p className="text-sm text-gray-500 mt-2">
+            No account required - list anonymously and start selling today!
           </p>
         </div>
 
@@ -345,6 +347,48 @@ export default function SellPage() {
                   onChange={(e) => setForm(f => ({ ...f, postalCode: e.target.value }))}
                   placeholder="e.g., 85001"
                 />
+              </div>
+
+              {/* Contact Information */}
+              <div className="border-t pt-6">
+                <h3 className="text-lg font-medium text-gray-900 mb-4">Contact Information</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Contact Name
+                    </label>
+                    <Input
+                      type="text"
+                      value={form.contactName}
+                      onChange={(e) => setForm(f => ({ ...f, contactName: e.target.value }))}
+                      placeholder="Your name"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Contact Email
+                    </label>
+                    <Input
+                      type="email"
+                      value={form.contactEmail}
+                      onChange={(e) => setForm(f => ({ ...f, contactEmail: e.target.value }))}
+                      placeholder="your@email.com"
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="mt-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Contact Phone (optional)
+                  </label>
+                  <Input
+                    type="tel"
+                    value={form.contactPhone}
+                    onChange={(e) => setForm(f => ({ ...f, contactPhone: e.target.value }))}
+                    placeholder="(555) 123-4567"
+                  />
+                </div>
               </div>
 
               <Button
