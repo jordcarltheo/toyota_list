@@ -7,30 +7,47 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Upload, X } from 'lucide-react'
 
 export default function SellPage() {
   const router = useRouter()
   const [form, setForm] = useState({
-    title: '',
-    model: '',
     year: new Date().getFullYear(),
-    price: 1500000,
+    trim: '',
+    model: '',
+    price: 25000, // Price in dollars, not cents
     description: '',
-    mileage: 0,
-    condition: 'Good' as const,
-    body_type: 'Sedan' as const,
-    drivetrain: 'FWD' as const,
-    transmission: 'Auto' as const,
-    fuel: 'Gas' as const,
+    mileage: 50000,
+    condition: 'Good' as 'Excellent' | 'Good' | 'Fair' | 'Project',
+    body_type: 'Sedan' as 'Sedan' | 'SUV' | 'Truck' | 'Van' | 'Wagon' | 'Coupe' | 'Other',
+    drivetrain: 'FWD' as 'FWD' | 'RWD' | 'AWD' | '4WD' | 'Unknown',
+    transmission: 'Auto' as 'Auto' | 'Manual' | 'Unknown',
+    fuel: 'Gas' as 'Gas' | 'Diesel' | 'Hybrid' | 'EV' | 'Other',
     city: '',
     state: '',
     postalCode: '',
-    country: 'US' as 'US' | 'CA' | 'MX', // default
+    country: 'US' as 'US' | 'CA' | 'MX',
     contactName: '',
     contactEmail: '',
-    contactPhone: ''
+    contactPhone: '',
+    hasAccident: false,
+    isCleanTitle: true,
+    hasMaintenanceRecords: false,
+    isCertified: false
   })
   const [loading, setLoading] = useState(false)
+  const [photos, setPhotos] = useState<File[]>([])
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const newPhotos = Array.from(e.target.files)
+      setPhotos(prev => [...prev, ...newPhotos].slice(0, 10)) // Max 10 photos
+    }
+  }
+
+  const removePhoto = (index: number) => {
+    setPhotos(prev => prev.filter((_, i) => i !== index))
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -42,16 +59,19 @@ export default function SellPage() {
       // Generate a temporary user ID for anonymous listings
       const tempUserId = `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 
+      // Auto-generate title from year + trim + model
+      const autoTitle = `${form.year} Toyota ${form.trim} ${form.model}`.trim()
+
       // Create listing
       const { data, error } = await supabase
         .from('listings')
         .insert({
           user_id: tempUserId,
-          title: form.title,
+          title: autoTitle,
           model: form.model,
           year: form.year,
-          price: form.price,
-          description: `${form.description}\n\nContact Information:\nName: ${form.contactName}\nEmail: ${form.contactEmail}${form.contactPhone ? `\nPhone: ${form.contactPhone}` : ''}`,
+          price: form.price * 100, // Convert dollars to cents for database
+          description: `${form.description}\n\nVehicle Details:\n- Condition: ${form.condition}\n- Body Type: ${form.body_type}\n- Drivetrain: ${form.drivetrain}\n- Transmission: ${form.transmission}\n- Fuel: ${form.fuel}\n- Mileage: ${form.mileage.toLocaleString()} miles\n- Clean Title: ${form.isCleanTitle ? 'Yes' : 'No'}\n- Accident History: ${form.hasAccident ? 'Yes' : 'No'}\n- Maintenance Records: ${form.hasMaintenanceRecords ? 'Yes' : 'No'}\n- Certified: ${form.isCertified ? 'Yes' : 'No'}\n\nContact Information:\nName: ${form.contactName}\nEmail: ${form.contactEmail}${form.contactPhone ? `\nPhone: ${form.contactPhone}` : ''}`,
           mileage: form.mileage,
           condition: form.condition,
           body_type: form.body_type,
@@ -73,6 +93,9 @@ export default function SellPage() {
         return
       }
 
+      // TODO: Handle photo uploads to Supabase storage
+      // For now, we'll just redirect to the listing
+
       // Redirect to the new listing
       router.push(`/listings/${data.id}`)
     } catch (error) {
@@ -85,13 +108,13 @@ export default function SellPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             List Your Toyota
           </h1>
           <p className="text-lg text-gray-600">
-            Create a listing to sell your Toyota vehicle
+            Quick and easy - just answer a few questions
           </p>
           <p className="text-sm text-gray-500 mt-2">
             No account required - list anonymously and start selling today!
@@ -100,37 +123,12 @@ export default function SellPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Listing Details</CardTitle>
+            <CardTitle>Vehicle Information</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Title
-                </label>
-                <Input
-                  type="text"
-                  value={form.title}
-                  onChange={(e) => setForm(f => ({ ...f, title: e.target.value }))}
-                  placeholder="e.g., 2019 Toyota Camry XSE"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Model
-                </label>
-                <Input
-                  type="text"
-                  value={form.model}
-                  onChange={(e) => setForm(f => ({ ...f, model: e.target.value }))}
-                  placeholder="e.g., Camry"
-                  required
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
+              {/* Basic Vehicle Info */}
+              <div className="grid grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Year
@@ -146,39 +144,71 @@ export default function SellPage() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Price (cents)
+                    Trim Level
                   </label>
                   <Input
-                    type="number"
-                    value={form.price}
-                    onChange={(e) => setForm(f => ({ ...f, price: parseInt(e.target.value) }))}
-                    min="0"
-                    step="100"
+                    type="text"
+                    value={form.trim}
+                    onChange={(e) => setForm(f => ({ ...f, trim: e.target.value }))}
+                    placeholder="e.g., XSE, TRD"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Model
+                  </label>
+                  <Input
+                    type="text"
+                    value={form.model}
+                    onChange={(e) => setForm(f => ({ ...f, model: e.target.value }))}
+                    placeholder="e.g., Camry, Tacoma"
                     required
                   />
                 </div>
               </div>
 
+              {/* Price */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Price (USD)
+                </label>
+                <Input
+                  type="number"
+                  value={form.price}
+                  onChange={(e) => setForm(f => ({ ...f, price: parseInt(e.target.value) }))}
+                  min="0"
+                  step="100"
+                  placeholder="25000"
+                  required
+                />
+              </div>
+
+              {/* Mileage */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Mileage
+                </label>
+                <Input
+                  type="number"
+                  value={form.mileage}
+                  onChange={(e) => setForm(f => ({ ...f, mileage: parseInt(e.target.value) }))}
+                  min="0"
+                  step="1000"
+                  placeholder="50000"
+                  required
+                />
+              </div>
+
+              {/* Vehicle Details */}
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Mileage
-                  </label>
-                  <Input
-                    type="number"
-                    value={form.mileage}
-                    onChange={(e) => setForm(f => ({ ...f, mileage: parseInt(e.target.value) }))}
-                    min="0"
-                    required
-                  />
-                </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Condition
                   </label>
                   <Select
                     value={form.condition}
-                    onValueChange={(value) => setForm(f => ({ ...f, condition: value as any }))}
+                    onValueChange={(value: 'Excellent' | 'Good' | 'Fair' | 'Project') => setForm(f => ({ ...f, condition: value }))}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -191,16 +221,13 @@ export default function SellPage() {
                     </SelectContent>
                   </Select>
                 </div>
-              </div>
-
-              <div className="grid grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Body Type
                   </label>
                   <Select
                     value={form.body_type}
-                    onValueChange={(value) => setForm(f => ({ ...f, body_type: value as any }))}
+                    onValueChange={(value: 'Sedan' | 'SUV' | 'Truck' | 'Van' | 'Wagon' | 'Coupe' | 'Other') => setForm(f => ({ ...f, body_type: value }))}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -216,22 +243,25 @@ export default function SellPage() {
                     </SelectContent>
                   </Select>
                 </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Drivetrain
                   </label>
                   <Select
                     value={form.drivetrain}
-                    onValueChange={(value) => setForm(f => ({ ...f, drivetrain: value as any }))}
+                    onValueChange={(value: 'FWD' | 'RWD' | 'AWD' | '4WD' | 'Unknown') => setForm(f => ({ ...f, drivetrain: value }))}
                   >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="FWD">FWD</SelectItem>
-                      <SelectItem value="RWD">RWD</SelectItem>
-                      <SelectItem value="AWD">AWD</SelectItem>
-                      <SelectItem value="4WD">4WD</SelectItem>
+                      <SelectItem value="FWD">Front-Wheel Drive</SelectItem>
+                      <SelectItem value="RWD">Rear-Wheel Drive</SelectItem>
+                      <SelectItem value="AWD">All-Wheel Drive</SelectItem>
+                      <SelectItem value="4WD">Four-Wheel Drive</SelectItem>
                       <SelectItem value="Unknown">Unknown</SelectItem>
                     </SelectContent>
                   </Select>
@@ -242,13 +272,13 @@ export default function SellPage() {
                   </label>
                   <Select
                     value={form.transmission}
-                    onValueChange={(value) => setForm(f => ({ ...f, transmission: value as any }))}
+                    onValueChange={(value: 'Auto' | 'Manual' | 'Unknown') => setForm(f => ({ ...f, transmission: value }))}
                   >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Auto">Auto</SelectItem>
+                      <SelectItem value="Auto">Automatic</SelectItem>
                       <SelectItem value="Manual">Manual</SelectItem>
                       <SelectItem value="Unknown">Unknown</SelectItem>
                     </SelectContent>
@@ -262,7 +292,7 @@ export default function SellPage() {
                 </label>
                 <Select
                   value={form.fuel}
-                  onValueChange={(value) => setForm(f => ({ ...f, fuel: value as any }))}
+                  onValueChange={(value: 'Gas' | 'Diesel' | 'Hybrid' | 'EV' | 'Other') => setForm(f => ({ ...f, fuel: value }))}
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -271,82 +301,203 @@ export default function SellPage() {
                     <SelectItem value="Gas">Gas</SelectItem>
                     <SelectItem value="Diesel">Diesel</SelectItem>
                     <SelectItem value="Hybrid">Hybrid</SelectItem>
-                    <SelectItem value="EV">EV</SelectItem>
+                    <SelectItem value="EV">Electric</SelectItem>
                     <SelectItem value="Other">Other</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
+              {/* Binary Questions */}
+              <div className="border-t pt-6">
+                <h3 className="text-lg font-medium text-gray-900 mb-4">Quick Questions</h3>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-gray-700">Clean title?</span>
+                    <Select
+                      value={form.isCleanTitle ? 'yes' : 'no'}
+                      onValueChange={(value) => setForm(f => ({ ...f, isCleanTitle: value === 'yes' }))}
+                    >
+                      <SelectTrigger className="w-24">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="yes">Yes</SelectItem>
+                        <SelectItem value="no">No</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-gray-700">Any accident history?</span>
+                    <Select
+                      value={form.hasAccident ? 'yes' : 'no'}
+                      onValueChange={(value) => setForm(f => ({ ...f, hasAccident: value === 'yes' }))}
+                    >
+                      <SelectTrigger className="w-24">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="no">No</SelectItem>
+                        <SelectItem value="yes">Yes</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-gray-700">Maintenance records available?</span>
+                    <Select
+                      value={form.hasMaintenanceRecords ? 'yes' : 'no'}
+                      onValueChange={(value) => setForm(f => ({ ...f, hasMaintenanceRecords: value === 'yes' }))}
+                    >
+                      <SelectTrigger className="w-24">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="no">No</SelectItem>
+                        <SelectItem value="yes">Yes</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-gray-700">Certified pre-owned?</span>
+                    <Select
+                      value={form.isCertified ? 'yes' : 'no'}
+                      onValueChange={(value) => setForm(f => ({ ...f, isCertified: value === 'yes' }))}
+                    >
+                      <SelectTrigger className="w-24">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="no">No</SelectItem>
+                        <SelectItem value="yes">Yes</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Description */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Description
+                  Additional Details (optional)
                 </label>
                 <textarea
                   className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                  rows={4}
+                  rows={3}
                   value={form.description}
                   onChange={(e) => setForm(f => ({ ...f, description: e.target.value }))}
-                  placeholder="Describe your vehicle..."
-                  required
+                  placeholder="Any additional details about your vehicle..."
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Country
-                </label>
-                <Select
-                  value={form.country}
-                  onValueChange={(value: 'US' | 'CA' | 'MX') => setForm(f => ({ ...f, country: value }))}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="US">United States</SelectItem>
-                    <SelectItem value="CA">Canada</SelectItem>
-                    <SelectItem value="MX">Mexico</SelectItem>
-                  </SelectContent>
-                </Select>
+              {/* Location */}
+              <div className="border-t pt-6">
+                <h3 className="text-lg font-medium text-gray-900 mb-4">Location</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Country
+                    </label>
+                    <Select
+                      value={form.country}
+                      onValueChange={(value: 'US' | 'CA' | 'MX') => setForm(f => ({ ...f, country: value }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="US">United States</SelectItem>
+                        <SelectItem value="CA">Canada</SelectItem>
+                        <SelectItem value="MX">Mexico</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      State/Province
+                    </label>
+                    <Input
+                      type="text"
+                      value={form.state}
+                      onChange={(e) => setForm(f => ({ ...f, state: e.target.value }))}
+                      placeholder="e.g., AZ"
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4 mt-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      City
+                    </label>
+                    <Input
+                      type="text"
+                      value={form.city}
+                      onChange={(e) => setForm(f => ({ ...f, city: e.target.value }))}
+                      placeholder="e.g., Phoenix"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Postal Code
+                    </label>
+                    <Input
+                      type="text"
+                      value={form.postalCode}
+                      onChange={(e) => setForm(f => ({ ...f, postalCode: e.target.value }))}
+                      placeholder="e.g., 85001"
+                    />
+                  </div>
+                </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-4">
-                <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    City
-                  </label>
-                  <Input
-                    type="text"
-                    value={form.city}
-                    onChange={(e) => setForm(f => ({ ...f, city: e.target.value }))}
-                    placeholder="e.g., Phoenix"
-                    required
-                  />
+              {/* Photos */}
+              <div className="border-t pt-6">
+                <h3 className="text-lg font-medium text-gray-900 mb-4">Photos</h3>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                  <Upload className="mx-auto h-12 w-12 text-gray-400" />
+                  <div className="mt-4">
+                    <label htmlFor="photo-upload" className="cursor-pointer">
+                      <span className="text-blue-600 hover:text-blue-500 font-medium">
+                        Click to upload photos
+                      </span>
+                      <input
+                        id="photo-upload"
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        onChange={handlePhotoUpload}
+                        className="hidden"
+                      />
+                    </label>
+                    <p className="text-sm text-gray-500 mt-1">
+                      Upload up to 10 photos (JPG, PNG)
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    State/Province
-                  </label>
-                  <Input
-                    type="text"
-                    value={form.state}
-                    onChange={(e) => setForm(f => ({ ...f, state: e.target.value }))}
-                    placeholder="e.g., AZ"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Postal Code (optional)
-                </label>
-                <Input
-                  type="text"
-                  value={form.postalCode}
-                  onChange={(e) => setForm(f => ({ ...f, postalCode: e.target.value }))}
-                  placeholder="e.g., 85001"
-                />
+                
+                {photos.length > 0 && (
+                  <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {photos.map((photo, index) => (
+                      <div key={index} className="relative">
+                        <img
+                          src={URL.createObjectURL(photo)}
+                          alt={`Photo ${index + 1}`}
+                          className="w-full h-24 object-cover rounded-lg"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removePhoto(index)}
+                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Contact Information */}
