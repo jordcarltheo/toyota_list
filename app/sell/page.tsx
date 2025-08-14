@@ -59,6 +59,23 @@ export default function SellPage() {
       // Generate a proper UUID for anonymous listings
       const tempUserId = crypto.randomUUID()
 
+      // Create a profile entry for the anonymous user
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .insert({
+          id: tempUserId,
+          full_name: form.contactName,
+          email: form.contactEmail,
+          role: 'user',
+          created_at: new Date().toISOString()
+        })
+
+      if (profileError && profileError.code !== '23505') { // Ignore duplicate key errors
+        console.error('Error creating profile:', profileError)
+        alert('Error creating listing. Please try again.')
+        return
+      }
+
       // Auto-generate title from year + trim + model
       const autoTitle = `${form.year} Toyota ${form.trim} ${form.model}`.trim()
 
@@ -176,12 +193,15 @@ export default function SellPage() {
                 <Input
                   type="number"
                   value={form.price}
-                  onChange={(e) => setForm(f => ({ ...f, price: parseInt(e.target.value) }))}
+                  onChange={(e) => setForm(f => ({ ...f, price: parseInt(e.target.value) || 0 }))}
                   min="0"
-                  step="100"
+                  step="1"
                   placeholder="25000"
                   required
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  Enter the price in whole dollars (e.g., 25000 for $25,000)
+                </p>
               </div>
 
               {/* Mileage */}
