@@ -42,6 +42,14 @@ export interface ListingPhoto {
   created_at: string
 }
 
+export interface ListingContact {
+  id: string
+  listing_id: string
+  phone?: string
+  email: string
+  created_at: string
+}
+
 export interface Message {
   id: string
   listing_id: string

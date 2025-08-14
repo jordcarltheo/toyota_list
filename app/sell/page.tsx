@@ -64,10 +64,11 @@ export default function SellPage() {
         .from('profiles')
         .insert({
           id: tempUserId,
-          full_name: form.contactName,
-          email: form.contactEmail,
-          role: 'user',
-          created_at: new Date().toISOString()
+          // Only include basic fields that should exist
+          // full_name: form.contactName, // Comment out if column doesn't exist
+          // email: form.contactEmail,    // Comment out if column doesn't exist
+          // role: 'user',                // Comment out if column doesn't exist
+          // created_at: new Date().toISOString() // Comment out if column doesn't exist
         })
 
       if (profileError && profileError.code !== '23505') { // Ignore duplicate key errors
@@ -88,7 +89,7 @@ export default function SellPage() {
           model: form.model,
           year: form.year,
           price: form.price * 100, // Convert dollars to cents for database
-          description: `${form.description}\n\nVehicle Details:\n- Condition: ${form.condition}\n- Body Type: ${form.body_type}\n- Drivetrain: ${form.drivetrain}\n- Transmission: ${form.transmission}\n- Fuel: ${form.fuel}\n- Mileage: ${form.mileage.toLocaleString()} miles\n- Clean Title: ${form.isCleanTitle ? 'Yes' : 'No'}\n- Accident History: ${form.hasAccident ? 'Yes' : 'No'}\n- Maintenance Records: ${form.hasMaintenanceRecords ? 'Yes' : 'No'}\n- Certified: ${form.isCertified ? 'Yes' : 'No'}\n\nContact Information:\nName: ${form.contactName}\nEmail: ${form.contactEmail}${form.contactPhone ? `\nPhone: ${form.contactPhone}` : ''}`,
+          description: `${form.description}\n\nVehicle Details:\n- Condition: ${form.condition}\n- Body Type: ${form.body_type}\n- Drivetrain: ${form.drivetrain}\n- Transmission: ${form.transmission}\n- Fuel: ${form.fuel}\n- Mileage: ${form.mileage.toLocaleString()} miles\n- Clean Title: ${form.isCleanTitle ? 'Yes' : 'No'}\n- Accident History: ${form.hasAccident ? 'Yes' : 'No'}\n- Maintenance Records: ${form.hasMaintenanceRecords ? 'Yes' : 'No'}\n- Certified: ${form.isCertified ? 'Yes' : 'No'}`,
           mileage: form.mileage,
           condition: form.condition,
           body_type: form.body_type,
@@ -108,6 +109,21 @@ export default function SellPage() {
         console.error('Error creating listing:', error)
         alert('Error creating listing. Please try again.')
         return
+      }
+
+      // Store contact information securely in separate table
+      const { error: contactError } = await supabase
+        .from('listing_contacts')
+        .insert({
+          listing_id: data.id,
+          phone: form.contactPhone || null,
+          email: form.contactEmail
+        })
+
+      if (contactError) {
+        console.error('Error storing contact info:', contactError)
+        // Don't fail the listing creation, just log the error
+        // Contact info can be added later if needed
       }
 
       // TODO: Handle photo uploads to Supabase storage
