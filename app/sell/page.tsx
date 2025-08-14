@@ -56,8 +56,8 @@ export default function SellPage() {
     try {
       const supabase = createBrowserSupabaseClient()
       
-      // Generate a temporary user ID for anonymous listings
-      const tempUserId = `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      // Generate a proper UUID for anonymous listings
+      const tempUserId = crypto.randomUUID()
 
       // Auto-generate title from year + trim + model
       const autoTitle = `${form.year} Toyota ${form.trim} ${form.model}`.trim()
