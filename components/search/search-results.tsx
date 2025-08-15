@@ -34,32 +34,47 @@ export function SearchResults({ filters }: SearchResultsProps) {
           .eq('status', 'active')
 
         // Apply filters
-        if (filters.location_country) {
+        if (filters.location_country && filters.location_country !== 'all') {
           query = query.eq('location_country', filters.location_country)
         }
-        if (filters.location_state) {
+        if (filters.location_state && filters.location_state !== 'all') {
           query = query.eq('location_state', filters.location_state)
         }
         if (filters.location_city) {
           query = query.ilike('location_city', `%${filters.location_city}%`)
         }
-        if (filters.make) {
+        if (filters.make && filters.make !== 'all') {
           query = query.eq('make', filters.make)
         }
-        if (filters.model) {
+        if (filters.model && filters.model !== 'all') {
           query = query.eq('model', filters.model)
         }
-        if (filters.min_price) {
-          query = query.gte('price', filters.min_price)
+        if (filters.price_min) {
+          query = query.gte('price', parseInt(filters.price_min) * 100) // Convert to cents
         }
-        if (filters.max_price) {
-          query = query.lte('price', filters.max_price)
+        if (filters.price_max) {
+          query = query.lte('price', parseInt(filters.price_max) * 100) // Convert to cents
         }
-        if (filters.min_year) {
-          query = query.gte('year', filters.min_year)
+        if (filters.year_min) {
+          query = query.gte('year', parseInt(filters.year_min))
         }
-        if (filters.max_year) {
-          query = query.lte('year', filters.max_year)
+        if (filters.year_max) {
+          query = query.lte('year', parseInt(filters.year_max))
+        }
+        if (filters.body_type && filters.body_type !== 'all') {
+          query = query.eq('body_type', filters.body_type)
+        }
+        if (filters.drivetrain && filters.drivetrain !== 'all') {
+          query = query.eq('drivetrain', filters.drivetrain)
+        }
+        if (filters.transmission && filters.transmission !== 'all') {
+          query = query.eq('transmission', filters.transmission)
+        }
+        if (filters.fuel && filters.fuel !== 'all') {
+          query = query.eq('fuel', filters.fuel)
+        }
+        if (filters.condition && filters.condition !== 'all') {
+          query = query.eq('condition', filters.condition)
         }
 
         const { data, error } = await query.order('created_at', { ascending: false })

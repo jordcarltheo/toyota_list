@@ -10,20 +10,20 @@ import { useSearchParams } from 'next/navigation'
 function SearchPageContent() {
   const searchParams = useSearchParams()
   const [filters, setFilters] = useState({
-    model: searchParams.get('model') || '',
+    model: searchParams.get('model') || 'all',
     year_min: searchParams.get('year_min') || '',
     year_max: searchParams.get('year_max') || '',
     price_min: searchParams.get('price_min') || '',
     price_max: searchParams.get('price_max') || '',
     mileage_max: searchParams.get('mileage_max') || '',
-    body_type: searchParams.get('body_type') || '',
-    drivetrain: searchParams.get('drivetrain') || '',
-    transmission: searchParams.get('transmission') || '',
-    fuel: searchParams.get('fuel') || '',
-    condition: searchParams.get('condition') || '',
+    body_type: searchParams.get('body_type') || 'all',
+    drivetrain: searchParams.get('drivetrain') || 'all',
+    transmission: searchParams.get('transmission') || 'all',
+    fuel: searchParams.get('fuel') || 'all',
+    condition: searchParams.get('condition') || 'all',
     location_city: searchParams.get('location_city') || '',
-    location_state: searchParams.get('location_state') || '',
-    location_country: searchParams.get('location_country') || ''
+    location_state: searchParams.get('location_state') || 'all',
+    location_country: searchParams.get('location_country') || 'all'
   })
 
   return (

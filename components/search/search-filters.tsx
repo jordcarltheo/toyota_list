@@ -62,7 +62,17 @@ const locationOptions = {
 }
 
 export function SearchFilters({ filters, setFilters }: SearchFiltersProps) {
-  const [localFilters, setLocalFilters] = useState(filters)
+  const [localFilters, setLocalFilters] = useState({
+    ...filters,
+    model: filters.model || 'all',
+    body_type: filters.body_type || 'all',
+    drivetrain: filters.drivetrain || 'all',
+    transmission: filters.transmission || 'all',
+    fuel: filters.fuel || 'all',
+    condition: filters.condition || 'all',
+    location_state: filters.location_state || 'all',
+    location_country: filters.location_country || 'all'
+  })
 
   const handleFilterChange = (key: string, value: string) => {
     setLocalFilters(prev => {
@@ -84,20 +94,20 @@ export function SearchFilters({ filters, setFilters }: SearchFiltersProps) {
 
   const clearFilters = () => {
     const clearedFilters = {
-      model: '',
+      model: 'all',
       year_min: '',
       year_max: '',
       price_min: '',
       price_max: '',
       mileage_max: '',
-      body_type: '',
-      drivetrain: '',
-      transmission: '',
-      fuel: '',
-      condition: '',
+      body_type: 'all',
+      drivetrain: 'all',
+      transmission: 'all',
+      fuel: 'all',
+      condition: 'all',
       location_city: '',
-      location_state: '',
-      location_country: ''
+      location_state: 'all',
+      location_country: 'all'
     }
     setLocalFilters(clearedFilters)
     setFilters(clearedFilters)
@@ -137,7 +147,7 @@ export function SearchFilters({ filters, setFilters }: SearchFiltersProps) {
               <SelectValue placeholder="All Models" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Models</SelectItem>
+              <SelectItem value="all">All Models</SelectItem>
               {toyotaModels.map((model) => (
                 <SelectItem key={model} value={model}>
                   {model}
@@ -222,8 +232,77 @@ export function SearchFilters({ filters, setFilters }: SearchFiltersProps) {
               <SelectValue placeholder="All Body Types" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Body Types</SelectItem>
+              <SelectItem value="all">All Body Types</SelectItem>
               {bodyTypes.map((type) => (
+                <SelectItem key={type} value={type}>
+                  {type}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Drivetrain */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Drivetrain
+          </label>
+          <Select
+            value={localFilters.drivetrain}
+            onValueChange={(value) => handleFilterChange('drivetrain', value)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="All Drivetrains" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Drivetrains</SelectItem>
+              {drivetrains.map((type) => (
+                <SelectItem key={type} value={type}>
+                  {type}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Transmission */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Transmission
+          </label>
+          <Select
+            value={localFilters.transmission}
+            onValueChange={(value) => handleFilterChange('transmission', value)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="All Transmissions" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Transmissions</SelectItem>
+              {transmissions.map((type) => (
+                <SelectItem key={type} value={type}>
+                  {type}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Fuel Type */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Fuel Type
+          </label>
+          <Select
+            value={localFilters.fuel}
+            onValueChange={(value) => handleFilterChange('fuel', value)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="All Fuel Types" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Fuel Types</SelectItem>
+              {fuels.map((type) => (
                 <SelectItem key={type} value={type}>
                   {type}
                 </SelectItem>
@@ -245,7 +324,7 @@ export function SearchFilters({ filters, setFilters }: SearchFiltersProps) {
               <SelectValue placeholder="All Conditions" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Conditions</SelectItem>
+              <SelectItem value="all">All Conditions</SelectItem>
               {conditions.map((condition) => (
                 <SelectItem key={condition} value={condition}>
                   {condition}
@@ -271,7 +350,7 @@ export function SearchFilters({ filters, setFilters }: SearchFiltersProps) {
                 <SelectValue placeholder="Select Country" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Countries</SelectItem>
+                <SelectItem value="all">All Countries</SelectItem>
                 <SelectItem value="US">United States</SelectItem>
                 <SelectItem value="CA">Canada</SelectItem>
                 <SelectItem value="MX">Mexico</SelectItem>
@@ -290,7 +369,7 @@ export function SearchFilters({ filters, setFilters }: SearchFiltersProps) {
                 <SelectValue placeholder={localFilters.location_country ? "Select State/Province" : "Select Country First"} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All States/Provinces</SelectItem>
+                <SelectItem value="all">All States/Provinces</SelectItem>
                 {localFilters.location_country && locationOptions[localFilters.location_country as keyof typeof locationOptions]?.map((state) => (
                   <SelectItem key={state} value={state}>
                     {state}
