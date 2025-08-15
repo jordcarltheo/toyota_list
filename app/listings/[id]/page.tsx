@@ -12,13 +12,20 @@ interface ListingPageProps {
 export default async function ListingPage({ params }: ListingPageProps) {
   const supabase = supabaseServer()
   
-  // Fetch the listing with profile and contact info
+  // Fetch the listing with profile, contact info, and photos
   const { data: listing, error } = await supabase
     .from('listings')
     .select(`
       *,
       profiles!listings_user_id_fkey (
         full_name
+      ),
+      listing_photos (
+        id,
+        path,
+        width,
+        height,
+        sort_order
       )
     `)
     .eq('id', params.id)
@@ -67,14 +74,38 @@ export default async function ListingPage({ params }: ListingPageProps) {
         
         <CardContent className="space-y-6">
           {/* Photo Section */}
-          <div className="bg-gray-100 rounded-lg p-8 text-center">
-            <div className="text-gray-500 text-lg">
-              📸 Photo upload coming soon!
+          {listing.listing_photos && listing.listing_photos.length > 0 ? (
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900">Photos</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {listing.listing_photos
+                  .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0))
+                  .map((photo) => (
+                    <div key={photo.id} className="relative group">
+                                              <img
+                          src={`${process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://your-project.supabase.co'}/storage/v1/object/public/listing-photos/${photo.path}`}
+                          alt={`Vehicle photo`}
+                          className="w-full h-48 object-cover rounded-lg shadow-md hover:shadow-lg transition-shadow"
+                          onError={(e) => {
+                            // Fallback if image fails to load
+                            const target = e.target as HTMLImageElement;
+                            target.style.display = 'none';
+                          }}
+                        />
+                    </div>
+                  ))}
+              </div>
             </div>
-            <p className="text-sm text-gray-400 mt-2">
-              Sellers will be able to upload multiple photos of their Toyota
-            </p>
-          </div>
+          ) : (
+            <div className="bg-gray-100 rounded-lg p-8 text-center">
+              <div className="text-gray-500 text-lg">
+                📸 No photos uploaded yet
+              </div>
+              <p className="text-sm text-gray-400 mt-2">
+                Photos will appear here once uploaded by the seller
+              </p>
+            </div>
+          )}
 
           {/* Vehicle Details Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
