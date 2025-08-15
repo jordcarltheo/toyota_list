@@ -11,7 +11,7 @@ export default function TRDBanner() {
       />
       <div className="relative px-6 py-10">
         <h2 className="text-2xl font-semibold">List Today. Flat $99 Seller Fee.</h2>
-        <p className="mt-2 text-neutral-700">No percentage commissions. $99 buyer fee at purchase.</p>
+        <p className="mt-2 text-neutral-700">No percentage commissions. $10 buyer access for 30 days.</p>
         <div className="mt-4">
           <Link href="/sell">
             <Button size="lg" className="bg-blue-600 hover:bg-blue-700">

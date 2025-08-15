@@ -28,7 +28,7 @@ export function Header() {
             <Car className="h-8 w-8 text-blue-600" />
             <div>
               <h1 className="text-xl font-bold text-gray-900">{getBrandName()}</h1>
-              <p className="text-xs text-gray-500">{getMarketCity()}</p>
+              <p className="text-xs text-gray-500 italic text-gray-400">Literally just a list of available Toyotas. That's it.</p>
             </div>
           </Link>
 

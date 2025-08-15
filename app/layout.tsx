@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: process.env.NEXT_PUBLIC_BRAND_NAME || 'Toyota List',
-  description: 'Buy & Sell Toyotas Across the U.S., Canada, and Mexico. Toyota marketplace, Toyota classified ads, buy and sell Toyotas, Toyota cars and trucks. Simple $99 flat fees for buyers and sellers.',
+  description: 'Buy & Sell Toyotas Across the U.S., Canada, and Mexico. Toyota marketplace, Toyota classified ads, buy and sell Toyotas, Toyota cars and trucks. Simple $99 seller fee & $10 buyer access.',
   keywords: 'Toyota marketplace, Toyota classified ads, buy and sell Toyotas, Toyota cars and trucks, Canada, Mexico, Toyota vehicles, Toyota marketplace',
 }
 

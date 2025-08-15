@@ -4,7 +4,7 @@ A production-quality MVP marketplace for buying and selling Toyota vehicles acro
 
 ## Features
 
-- **Simple Fee Structure**: $99 seller listing fee, $99 buyer fee
+- **Simple Fee Structure**: $99 seller listing fee, $10 buyer access (30 days)
 - **National Reach**: Marketplace covering the U.S., Canada, and Mexico
 - **Secure Messaging**: Built-in messaging system between buyers and sellers
 - **Image Management**: Server-side image compression and optimization
@@ -147,7 +147,7 @@ toyota-list/
 ### Buyer Flow
 
 1. User views active listing
-2. User pays $99 buyer fee via Stripe
+2. User pays $10 buyer access fee via Stripe (30-day access)
 3. User gets seller contact information
 4. Messaging thread opens automatically
 

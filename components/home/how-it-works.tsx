@@ -26,7 +26,7 @@ const steps = [
   {
     step: '4',
     title: 'Complete Transaction',
-    description: 'When ready to buy, pay a $99 buyer fee to get seller contact information and complete your purchase.',
+            description: 'When ready to buy, pay a $10 fee for 30-day access to all seller contact information.',
     icon: Handshake,
     color: 'bg-orange-500'
   }
@@ -37,10 +37,10 @@ export function HowItWorks() {
     <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
             How It Works
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-700 dark:text-gray-200 max-w-2xl mx-auto">
             Our simple 4-step process makes buying and selling Toyota vehicles easy and secure across North America
           </p>
         </div>
@@ -64,7 +64,7 @@ export function HowItWorks() {
                 </CardHeader>
                 
                 <CardContent className="pt-0">
-                  <p className="text-gray-600 text-sm">{step.description}</p>
+                  <p className="text-gray-700 dark:text-gray-200 text-sm">{step.description}</p>
                 </CardContent>
               </Card>
             )
@@ -74,10 +74,10 @@ export function HowItWorks() {
         {/* Fee Structure */}
         <div className="mt-16 bg-gray-50 rounded-lg p-8">
           <div className="text-center mb-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
               Simple, Transparent Pricing
             </h3>
-            <p className="text-gray-600">
+            <p className="text-gray-700 dark:text-gray-200">
               No hidden fees, no percentage commissions. Just two flat fees.
             </p>
           </div>
@@ -87,9 +87,9 @@ export function HowItWorks() {
               <div className="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                 <Car className="h-8 w-8 text-blue-600" />
               </div>
-              <h4 className="text-lg font-semibold text-gray-900 mb-2">Seller Fee</h4>
+              <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Seller Fee</h4>
               <div className="text-3xl font-bold text-blue-600">$99</div>
-              <p className="text-sm text-gray-600 mt-2">
+              <p className="text-sm text-gray-700 dark:text-gray-200 mt-2">
                 One-time fee to list your vehicle. No recurring charges.
               </p>
             </div>
@@ -98,16 +98,16 @@ export function HowItWorks() {
               <div className="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                 <DollarSign className="h-8 w-8 text-green-600" />
               </div>
-              <h4 className="text-lg font-semibold text-gray-900 mb-2">Buyer Fee</h4>
-              <div className="text-3xl font-bold text-green-600">$99</div>
-              <p className="text-sm text-gray-600 mt-2">
-                One-time fee to access seller contact information.
-              </p>
+              <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Buyer Fee</h4>
+              <div className="text-3xl font-bold text-green-600">$10</div>
+                              <p className="text-sm text-gray-700 dark:text-gray-200 mt-2">
+                  30-day access to all seller contact information.
+                </p>
             </div>
           </div>
           
           <div className="text-center mt-8">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-600 dark:text-gray-300">
               <strong>Note:</strong> Vehicle purchase funds are handled directly between buyer and seller. 
               Our fees are platform access fees only.
             </p>

@@ -27,13 +27,13 @@ function SearchPageContent() {
   })
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Header />
       <main className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Search Toyota Vehicles</h1>
-            <p className="text-gray-600 mt-2">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Search Toyota Vehicles</h1>
+            <p className="text-gray-700 dark:text-gray-200 mt-2">
               Find your perfect Toyota across the U.S., Canada, and Mexico
             </p>
           </div>
@@ -56,10 +56,10 @@ function SearchPageContent() {
 export default function SearchPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading search...</p>
+          <p className="mt-4 text-gray-700 dark:text-gray-200">Loading search...</p>
         </div>
       </div>
     }>

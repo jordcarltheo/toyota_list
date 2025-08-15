@@ -101,7 +101,7 @@ export default function AboutPage() {
                 <div>
                   <h4 className="font-semibold text-gray-900">Simple Fee Structure</h4>
                   <p className="text-gray-600">
-                    $99 seller fee and $99 buyer fee. No hidden costs, no percentage commissions.
+                    $99 seller fee and $10 buyer access. No hidden costs, no percentage commissions.
                   </p>
                 </div>
               </div>

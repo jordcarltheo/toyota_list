@@ -51,11 +51,11 @@ const steps = [
   {
     step: '4',
     title: 'Complete Transaction',
-    description: 'When ready to buy, pay a $99 buyer fee to access seller contact information and complete your purchase with confidence.',
+    description: 'When ready to buy, pay a $10 fee for 30-day access to all seller contact information and complete your purchase with confidence.',
     icon: Handshake,
     color: 'bg-orange-500',
     details: [
-      '$99 buyer fee for access to seller info',
+      '$10 buyer fee for 30-day access to seller info',
       'Direct communication with seller',
       'Secure payment processing',
       'Transaction completion support',
@@ -149,10 +149,10 @@ export default function HowItWorksPage() {
                     <DollarSign className="h-10 w-10 text-green-600" />
                   </div>
                   <h4 className="text-xl font-semibold text-gray-900 mb-2">Buyer Fee</h4>
-                  <div className="text-4xl font-bold text-green-600 mb-2">$99</div>
-                  <p className="text-gray-600">
-                    One-time fee to access seller contact information and complete your purchase.
-                  </p>
+                  <div className="text-4xl font-bold text-green-600 mb-2">$10</div>
+                                      <p className="text-gray-600">
+                      30-day access to all seller contact information. No auto-renewal, no cancellation needed.
+                    </p>
                 </div>
               </div>
               

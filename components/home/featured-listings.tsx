@@ -60,10 +60,10 @@ export function FeaturedListings({ listings }: FeaturedListingsProps) {
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
               Featured Listings
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-700 dark:text-gray-200 max-w-2xl mx-auto">
               No listings found for the selected country
             </p>
           </div>
@@ -76,10 +76,10 @@ export function FeaturedListings({ listings }: FeaturedListingsProps) {
     <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
             Featured Listings
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-700 dark:text-gray-200 max-w-2xl mx-auto">
             Discover some of our best Toyota vehicles currently available across North America
           </p>
         </div>
@@ -107,7 +107,7 @@ export function FeaturedListings({ listings }: FeaturedListingsProps) {
                 </div>
               </CardHeader>
               <CardContent className="pt-0">
-                <div className="space-y-2 text-sm text-gray-600 mb-4">
+                <div className="space-y-2 text-sm text-gray-700 dark:text-gray-200 mb-4">
                   <div className="flex items-center space-x-2">
                     <Calendar className="h-4 w-4" />
                     <span>{listing.year}</span>

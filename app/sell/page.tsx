@@ -9,12 +9,64 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Upload, X } from 'lucide-react'
 
+// Toyota model data with body types and available trims
+const toyotaModels = {
+  'Camry': {
+    bodyType: 'Sedan',
+    trims: ['LE', 'SE', 'XLE', 'XSE', 'Nightshade', 'TRD']
+  },
+  'Corolla': {
+    bodyType: 'Sedan',
+    trims: ['L', 'LE', 'SE', 'XLE', 'XSE', 'Nightshade', 'Apex']
+  },
+  'Avalon': {
+    bodyType: 'Sedan',
+    trims: ['XLE', 'XSE', 'Limited', 'Touring']
+  },
+  'Prius': {
+    bodyType: 'Sedan',
+    trims: ['LE', 'XLE', 'Limited']
+  },
+  'RAV4': {
+    bodyType: 'SUV',
+    trims: ['LE', 'XLE', 'XLE Premium', 'Adventure', 'TRD Off-Road', 'Limited', 'Prime']
+  },
+  'Highlander': {
+    bodyType: 'SUV',
+    trims: ['L', 'LE', 'XLE', 'Limited', 'Platinum']
+  },
+  '4Runner': {
+    bodyType: 'SUV',
+    trims: ['SR5', 'TRD Off-Road', 'TRD Off-Road Premium', 'Limited', 'TRD Pro']
+  },
+  'Tacoma': {
+    bodyType: 'Truck',
+    trims: ['SR', 'SR5', 'TRD Sport', 'TRD Off-Road', 'TRD Pro', 'Limited']
+  },
+  'Tundra': {
+    bodyType: 'Truck',
+    trims: ['SR', 'SR5', 'Limited', 'Platinum', '1794 Edition', 'TRD Pro']
+  },
+  'Sienna': {
+    bodyType: 'Van',
+    trims: ['L', 'LE', 'XLE', 'Limited', 'Platinum']
+  },
+  'C-HR': {
+    bodyType: 'SUV',
+    trims: ['LE', 'XLE', 'Nightshade']
+  },
+  'Venza': {
+    bodyType: 'SUV',
+    trims: ['LE', 'XLE', 'Limited']
+  }
+}
+
 export default function SellPage() {
   const router = useRouter()
   const [form, setForm] = useState({
     year: new Date().getFullYear(),
+    model: '' as keyof typeof toyotaModels | '',
     trim: '',
-    model: '',
     price: 25000, // Price in dollars, not cents
     description: '',
     mileage: 50000,
@@ -38,6 +90,20 @@ export default function SellPage() {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [photos, setPhotos] = useState<File[]>([])
+
+  // Get available trims for selected model
+  const availableTrims = form.model ? toyotaModels[form.model]?.trims || [] : []
+
+  // Auto-select body type when model changes
+  const handleModelChange = (model: keyof typeof toyotaModels) => {
+    const bodyType = toyotaModels[model]?.bodyType as 'Sedan' | 'SUV' | 'Truck' | 'Van' | 'Wagon' | 'Coupe' | 'Other'
+    setForm(prev => ({
+      ...prev,
+      model,
+      body_type: bodyType,
+      trim: '' // Reset trim when model changes
+    }))
+  }
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -78,8 +144,8 @@ export default function SellPage() {
         return
       }
 
-      // Auto-generate title from year + trim + model
-      const autoTitle = `${form.year} Toyota ${form.trim} ${form.model}`.trim()
+      // Auto-generate title from year + trim + model (no need for "Toyota" since it's Toyota-specific)
+      const autoTitle = `${form.year} ${form.trim} ${form.model}`.trim()
 
       // Create listing
       const { data, error } = await supabase
@@ -166,7 +232,7 @@ export default function SellPage() {
                 <span className="text-white text-xs">✓</span>
               </div>
               <p className="text-green-800 font-medium">
-                Your Toyota has been listed successfully! 🎉
+                Your vehicle has been listed successfully! 🎉
               </p>
             </div>
             <p className="text-green-700 text-sm mt-1">
@@ -181,8 +247,11 @@ export default function SellPage() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Basic Vehicle Info */}
-              <div className="grid grid-cols-3 gap-4">
+              {/* Basic Vehicle Info - Year, Model, Trim */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-medium text-gray-900">Basic Vehicle Info</h3>
+                
+                {/* Year */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Year
@@ -196,29 +265,52 @@ export default function SellPage() {
                     required
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Trim Level
-                  </label>
-                  <Input
-                    type="text"
-                    value={form.trim}
-                    onChange={(e) => setForm(f => ({ ...f, trim: e.target.value }))}
-                    placeholder="e.g., XSE, TRD"
-                    required
-                  />
-                </div>
+
+                {/* Model */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Model
                   </label>
-                  <Input
-                    type="text"
+                  <Select
                     value={form.model}
-                    onChange={(e) => setForm(f => ({ ...f, model: e.target.value }))}
-                    placeholder="e.g., Camry, Tacoma"
+                    onValueChange={(value: keyof typeof toyotaModels) => handleModelChange(value)}
                     required
-                  />
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Model" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.keys(toyotaModels).map((model) => (
+                        <SelectItem key={model} value={model}>
+                          {model}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Trim */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Trim Level
+                  </label>
+                  <Select
+                    value={form.trim}
+                    onValueChange={(value) => setForm(f => ({ ...f, trim: value }))}
+                    disabled={!form.model}
+                    required
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={form.model ? "Select Trim" : "Select Model First"} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableTrims.map((trim) => (
+                        <SelectItem key={trim} value={trim}>
+                          {trim}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 
@@ -286,23 +378,15 @@ export default function SellPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Body Type
                   </label>
-                  <Select
+                  <Input
+                    type="text"
                     value={form.body_type}
-                    onValueChange={(value: 'Sedan' | 'SUV' | 'Truck' | 'Van' | 'Wagon' | 'Coupe' | 'Other') => setForm(f => ({ ...f, body_type: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Sedan">Sedan</SelectItem>
-                      <SelectItem value="SUV">SUV</SelectItem>
-                      <SelectItem value="Truck">Truck</SelectItem>
-                      <SelectItem value="Van">Van</SelectItem>
-                      <SelectItem value="Wagon">Wagon</SelectItem>
-                      <SelectItem value="Coupe">Coupe</SelectItem>
-                      <SelectItem value="Other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
+                    disabled
+                    className="bg-gray-100"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Auto-selected based on model
+                  </p>
                 </div>
               </div>
 
@@ -319,10 +403,10 @@ export default function SellPage() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="FWD">Front-Wheel Drive</SelectItem>
-                      <SelectItem value="RWD">Rear-Wheel Drive</SelectItem>
-                      <SelectItem value="AWD">All-Wheel Drive</SelectItem>
-                      <SelectItem value="4WD">Four-Wheel Drive</SelectItem>
+                      <SelectItem value="FWD">FWD</SelectItem>
+                      <SelectItem value="RWD">RWD</SelectItem>
+                      <SelectItem value="AWD">AWD</SelectItem>
+                      <SelectItem value="4WD">4WD</SelectItem>
                       <SelectItem value="Unknown">Unknown</SelectItem>
                     </SelectContent>
                   </Select>
@@ -339,7 +423,7 @@ export default function SellPage() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Auto">Automatic</SelectItem>
+                      <SelectItem value="Auto">Auto</SelectItem>
                       <SelectItem value="Manual">Manual</SelectItem>
                       <SelectItem value="Unknown">Unknown</SelectItem>
                     </SelectContent>
@@ -362,76 +446,81 @@ export default function SellPage() {
                     <SelectItem value="Gas">Gas</SelectItem>
                     <SelectItem value="Diesel">Diesel</SelectItem>
                     <SelectItem value="Hybrid">Hybrid</SelectItem>
-                    <SelectItem value="EV">Electric</SelectItem>
+                    <SelectItem value="EV">EV</SelectItem>
                     <SelectItem value="Other">Other</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
-              {/* Binary Questions */}
+              {/* Quick Questions */}
               <div className="border-t pt-6">
                 <h3 className="text-lg font-medium text-gray-900 mb-4">Quick Questions</h3>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-700">Clean title?</span>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Clean Title?
+                    </label>
                     <Select
-                      value={form.isCleanTitle ? 'yes' : 'no'}
-                      onValueChange={(value) => setForm(f => ({ ...f, isCleanTitle: value === 'yes' }))}
+                      value={form.isCleanTitle ? 'Yes' : 'No'}
+                      onValueChange={(value) => setForm(f => ({ ...f, isCleanTitle: value === 'Yes' }))}
                     >
-                      <SelectTrigger className="w-24">
+                      <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="yes">Yes</SelectItem>
-                        <SelectItem value="no">No</SelectItem>
+                        <SelectItem value="Yes">Yes</SelectItem>
+                        <SelectItem value="No">No</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-700">Any accident history?</span>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Accident History?
+                    </label>
                     <Select
-                      value={form.hasAccident ? 'yes' : 'no'}
-                      onValueChange={(value) => setForm(f => ({ ...f, hasAccident: value === 'yes' }))}
+                      value={form.hasAccident ? 'Yes' : 'No'}
+                      onValueChange={(value) => setForm(f => ({ ...f, hasAccident: value === 'Yes' }))}
                     >
-                      <SelectTrigger className="w-24">
+                      <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="no">No</SelectItem>
-                        <SelectItem value="yes">Yes</SelectItem>
+                        <SelectItem value="No">No</SelectItem>
+                        <SelectItem value="Yes">Yes</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-700">Maintenance records available?</span>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Maintenance Records?
+                    </label>
                     <Select
-                      value={form.hasMaintenanceRecords ? 'yes' : 'no'}
-                      onValueChange={(value) => setForm(f => ({ ...f, hasMaintenanceRecords: value === 'yes' }))}
+                      value={form.hasMaintenanceRecords ? 'Yes' : 'No'}
+                      onValueChange={(value) => setForm(f => ({ ...f, hasMaintenanceRecords: value === 'Yes' }))}
                     >
-                      <SelectTrigger className="w-24">
+                      <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="no">No</SelectItem>
-                        <SelectItem value="yes">Yes</SelectItem>
+                        <SelectItem value="No">No</SelectItem>
+                        <SelectItem value="Yes">Yes</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-700">Certified pre-owned?</span>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Certified Pre-Owned?
+                    </label>
                     <Select
-                      value={form.isCertified ? 'yes' : 'no'}
-                      onValueChange={(value) => setForm(f => ({ ...f, isCertified: value === 'yes' }))}
+                      value={form.isCertified ? 'Yes' : 'No'}
+                      onValueChange={(value) => setForm(f => ({ ...f, isCertified: value === 'Yes' }))}
                     >
-                      <SelectTrigger className="w-24">
+                      <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="no">No</SelectItem>
-                        <SelectItem value="yes">Yes</SelectItem>
+                        <SelectItem value="No">No</SelectItem>
+                        <SelectItem value="Yes">Yes</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -444,11 +533,11 @@ export default function SellPage() {
                   Additional Details (optional)
                 </label>
                 <textarea
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                  rows={3}
                   value={form.description}
                   onChange={(e) => setForm(f => ({ ...f, description: e.target.value }))}
-                  placeholder="Any additional details about your vehicle..."
+                  rows={4}
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  placeholder="Describe your vehicle, any modifications, recent work, etc."
                 />
               </div>
 
@@ -463,6 +552,7 @@ export default function SellPage() {
                     <Select
                       value={form.country}
                       onValueChange={(value: 'US' | 'CA' | 'MX') => setForm(f => ({ ...f, country: value }))}
+                      required
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -603,13 +693,19 @@ export default function SellPage() {
                 </div>
               </div>
 
-              <Button
-                type="submit"
-                disabled={loading}
-                className="w-full"
-              >
-                {loading ? 'Creating...' : 'Create Listing'}
-              </Button>
+              {/* Submit Button */}
+              <div className="border-t pt-6">
+                <Button
+                  type="submit"
+                  disabled={loading || !form.model || !form.trim}
+                  className="w-full bg-red-600 hover:bg-red-700 text-white py-3 text-lg font-semibold"
+                >
+                  {loading ? 'Creating Listing...' : 'Create Listing'}
+                </Button>
+                <p className="text-xs text-gray-500 mt-2 text-center">
+                  Your contact information will be protected and only shared with buyers after payment verification.
+                </p>
+              </div>
             </form>
           </CardContent>
         </Card>
