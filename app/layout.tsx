@@ -7,17 +7,17 @@ import { Toaster } from '@/components/ui/toaster'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Toyota List - Literally...a list of Toyotas',
-  description: 'Literally...a list of Toyotas. Buy & Sell Toyotas Across the U.S., Canada, and Mexico. Simple $99 seller fee & $10 buyer access.',
+  title: 'Toyota List - A list of Toyotas',
+  description: 'A list of Toyotas. Buy & Sell Toyotas Across the U.S., Canada, and Mexico. Simple $99 seller fee & $10 buyer access.',
   keywords: 'Toyota marketplace, Toyota classified ads, buy and sell Toyotas, Toyota cars and trucks, Canada, Mexico, Toyota vehicles, Toyota marketplace',
   openGraph: {
-    title: 'Toyota List - Literally...a list of Toyotas',
-    description: 'Literally...a list of Toyotas. Buy & Sell Toyotas Across the U.S., Canada, and Mexico.',
+    title: 'Toyota List - A list of Toyotas',
+    description: 'A list of Toyotas. Buy & Sell Toyotas Across the U.S., Canada, and Mexico.',
     url: 'https://www.toyotalist.com',
     siteName: 'Toyota List',
     images: [
       {
-        url: '/favicon.svg',
+        url: '/favicon.png',
         width: 32,
         height: 32,
         alt: 'Toyota List Racing Stripes',
@@ -28,9 +28,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary',
-    title: 'Toyota List - Literally...a list of Toyotas',
-    description: 'Literally...a list of Toyotas. Buy & Sell Toyotas Across the U.S., Canada, and Mexico.',
-    images: ['/favicon.svg'],
+    title: 'Toyota List - A list of Toyotas',
+    description: 'A list of Toyotas. Buy & Sell Toyotas Across the U.S., Canada, and Mexico.',
+    images: ['/favicon.png'],
   },
 }
 
@@ -42,7 +42,14 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <link rel="icon" href="/favicon.png" sizes="32x32" />
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/favicon.png" />
+        <meta name="theme-color" content="#EE1C25" />
+        <meta property="og:image" content="/favicon.png" />
+        <meta property="og:image:width" content="32" />
+        <meta property="og:image:height" content="32" />
+        <meta property="og:image:alt" content="Toyota List Racing Stripes" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
