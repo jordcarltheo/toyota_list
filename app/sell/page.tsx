@@ -88,6 +88,7 @@ export default function SellPage() {
     isCertified: false
   })
   const [loading, setLoading] = useState(false)
+  const [uploadingPhotos, setUploadingPhotos] = useState(false)
   const [success, setSuccess] = useState(false)
   const [photos, setPhotos] = useState<File[]>([])
 
@@ -108,7 +109,23 @@ export default function SellPage() {
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const newPhotos = Array.from(e.target.files)
-      setPhotos(prev => [...prev, ...newPhotos].slice(0, 10)) // Max 10 photos
+      
+      // Validate file types and sizes
+      const validPhotos = newPhotos.filter(file => {
+        const isValidType = ['image/jpeg', 'image/png', 'image/webp'].includes(file.type)
+        const isValidSize = file.size <= 5 * 1024 * 1024 // 5MB limit
+        
+        if (!isValidType) {
+          alert(`${file.name} is not a valid image type. Please use JPG, PNG, or WebP.`)
+        }
+        if (!isValidSize) {
+          alert(`${file.name} is too large. Please use images under 5MB.`)
+        }
+        
+        return isValidType && isValidSize
+      })
+      
+      setPhotos(prev => [...prev, ...validPhotos].slice(0, 10)) // Max 10 photos
     }
   }
 
@@ -193,8 +210,60 @@ export default function SellPage() {
         // Contact info can be added later if needed
       }
 
-      // TODO: Handle photo uploads to Supabase storage
-      // For now, we'll just redirect to the listing
+            // Upload photos to Supabase Storage
+      if (photos.length > 0) {
+        setUploadingPhotos(true)
+        try {
+          const photoPromises = photos.map(async (photo, index) => {
+            // Create a unique filename
+            const fileExt = photo.name.split('.').pop()
+            const fileName = `${data.id}/${Date.now()}_${index}.${fileExt}`
+            
+            // Upload to Supabase Storage
+            const { data: uploadData, error: uploadError } = await supabase.storage
+              .from('listing-photos')
+              .upload(fileName, photo, {
+                cacheControl: '3600',
+                upsert: false
+              })
+            
+            if (uploadError) {
+              console.error('Error uploading photo:', uploadError)
+              return null
+            }
+            
+            // Get the public URL
+            const { data: urlData } = supabase.storage
+              .from('listing-photos')
+              .getPublicUrl(fileName)
+            
+            // Save photo metadata to database
+            const { error: photoError } = await supabase
+              .from('listing_photos')
+              .insert({
+                listing_id: data.id,
+                path: fileName,
+                width: 0, // We'll get actual dimensions later if needed
+                height: 0,
+                sort_order: index
+              })
+            
+            if (photoError) {
+              console.error('Error saving photo metadata:', photoError)
+            }
+            
+            return { fileName, publicUrl: urlData.publicUrl }
+          })
+          
+          // Wait for all photo uploads to complete
+          await Promise.all(photoPromises)
+        } catch (photoError) {
+          console.error('Error handling photos:', photoError)
+          // Don't fail the listing creation, just log the error
+        } finally {
+          setUploadingPhotos(false)
+        }
+      }
 
       // Show success state and redirect
       setSuccess(true)
@@ -630,23 +699,28 @@ export default function SellPage() {
                 </div>
                 
                 {photos.length > 0 && (
-                  <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {photos.map((photo, index) => (
-                      <div key={index} className="relative">
-                        <img
-                          src={URL.createObjectURL(photo)}
-                          alt={`Photo ${index + 1}`}
-                          className="w-full h-24 object-cover rounded-lg"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => removePhoto(index)}
-                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
-                      </div>
-                    ))}
+                  <div className="mt-4">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {photos.map((photo, index) => (
+                        <div key={index} className="relative">
+                          <img
+                            src={URL.createObjectURL(photo)}
+                            alt={`Photo ${index + 1}`}
+                            className="w-full h-24 object-cover rounded-lg"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removePhoto(index)}
+                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-sm text-gray-500 mt-2">
+                      {photos.length} photo{photos.length !== 1 ? 's' : ''} ready to upload
+                    </p>
                   </div>
                 )}
               </div>
@@ -695,13 +769,14 @@ export default function SellPage() {
 
               {/* Submit Button */}
               <div className="border-t pt-6">
-                <Button
-                  type="submit"
-                  disabled={loading || !form.model || !form.trim}
-                  className="w-full bg-red-600 hover:bg-red-700 text-white py-3 text-lg font-semibold"
-                >
-                  {loading ? 'Creating Listing...' : 'Create Listing'}
-                </Button>
+                              <Button
+                type="submit"
+                disabled={loading || uploadingPhotos || !form.model || !form.trim}
+                className="w-full bg-red-600 hover:bg-red-700 text-white py-3 text-lg font-semibold"
+              >
+                {loading ? 'Creating Listing...' : 
+                 uploadingPhotos ? 'Uploading Photos...' : 'Create Listing'}
+              </Button>
                 <p className="text-xs text-gray-500 mt-2 text-center">
                   Your contact information will be protected and only shared with buyers after payment verification.
                 </p>
