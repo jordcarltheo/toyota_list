@@ -6,6 +6,9 @@ import TRDBanner from '@/components/TRDBanner'
 import { supabaseServer } from '@/lib/supabase-server'
 import Link from 'next/link'
 
+// Force dynamic rendering to avoid static generation issues with cookies
+export const dynamic = 'force-dynamic'
+
 export default async function HomePage({ 
   searchParams 
 }: { 
