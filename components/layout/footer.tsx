@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { getBrandName, getMarketCity } from '@/lib/utils'
 import { Car } from 'lucide-react'
-import { ThemeToggle } from '@/components/ThemeToggle'
+import ThemeToggle from '@/components/ThemeToggle'
 
 export function Footer() {
   return (
