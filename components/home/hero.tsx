@@ -8,7 +8,7 @@ import TRDStripeBar from '@/components/TRDStripeBar'
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden rounded-xl border bg-white mx-4 sm:mx-6 lg:mx-8 mt-8">
+    <section className="relative overflow-hidden rounded-xl border bg-white dark:bg-gray-900 mx-4 sm:mx-6 lg:mx-8 mt-8">
       <div className="absolute inset-x-0 top-0">
         <TRDStripeBar height={8} />
       </div>
