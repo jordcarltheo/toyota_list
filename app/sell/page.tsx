@@ -36,6 +36,7 @@ export default function SellPage() {
     isCertified: false
   })
   const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
   const [photos, setPhotos] = useState<File[]>([])
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -129,8 +130,11 @@ export default function SellPage() {
       // TODO: Handle photo uploads to Supabase storage
       // For now, we'll just redirect to the listing
 
-      // Redirect to the new listing
-      router.push(`/listings/${data.id}`)
+      // Show success state and redirect
+      setSuccess(true)
+      setTimeout(() => {
+        router.push(`/listings/${data.id}`)
+      }, 2000) // Give user 2 seconds to see success message
     } catch (error) {
       console.error('Error:', error)
       alert('Error creating listing. Please try again.')
@@ -153,6 +157,23 @@ export default function SellPage() {
             No account required - list anonymously and start selling today!
           </p>
         </div>
+
+        {/* Success Message */}
+        {success && (
+          <div className="mb-6 bg-green-50 border border-green-200 rounded-lg p-4">
+            <div className="flex items-center space-x-2">
+              <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
+                <span className="text-white text-xs">✓</span>
+              </div>
+              <p className="text-green-800 font-medium">
+                Your Toyota has been listed successfully! 🎉
+              </p>
+            </div>
+            <p className="text-green-700 text-sm mt-1">
+              You can now view your listing and share it with potential buyers.
+            </p>
+          </div>
+        )}
 
         <Card>
           <CardHeader>

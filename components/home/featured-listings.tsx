@@ -86,7 +86,8 @@ export function FeaturedListings({ listings }: FeaturedListingsProps) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {listings.map((listing) => (
-            <Card key={listing.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+            <Link key={listing.id} href={`/listings/${listing.id}`} className="block">
+              <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
               <div className="aspect-video bg-gray-200 overflow-hidden">
                 <img
                   src={listing.listing_photos[0]?.path || '/placeholder-car.jpg'}
@@ -131,6 +132,7 @@ export function FeaturedListings({ listings }: FeaturedListingsProps) {
                 </div>
               </CardContent>
             </Card>
+              </Link>
           ))}
         </div>
 
