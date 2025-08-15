@@ -7,9 +7,31 @@ import { Toaster } from '@/components/ui/toaster'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: process.env.NEXT_PUBLIC_BRAND_NAME || 'Toyota List',
-  description: 'Buy & Sell Toyotas Across the U.S., Canada, and Mexico. Toyota marketplace, Toyota classified ads, buy and sell Toyotas, Toyota cars and trucks. Simple $99 seller fee & $10 buyer access.',
+  title: 'Toyota List - Literally...a list of Toyotas',
+  description: 'Literally...a list of Toyotas. Buy & Sell Toyotas Across the U.S., Canada, and Mexico. Simple $99 seller fee & $10 buyer access.',
   keywords: 'Toyota marketplace, Toyota classified ads, buy and sell Toyotas, Toyota cars and trucks, Canada, Mexico, Toyota vehicles, Toyota marketplace',
+  openGraph: {
+    title: 'Toyota List - Literally...a list of Toyotas',
+    description: 'Literally...a list of Toyotas. Buy & Sell Toyotas Across the U.S., Canada, and Mexico.',
+    url: 'https://www.toyotalist.com',
+    siteName: 'Toyota List',
+    images: [
+      {
+        url: '/favicon.svg',
+        width: 32,
+        height: 32,
+        alt: 'Toyota List Racing Stripes',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Toyota List - Literally...a list of Toyotas',
+    description: 'Literally...a list of Toyotas. Buy & Sell Toyotas Across the U.S., Canada, and Mexico.',
+    images: ['/favicon.svg'],
+  },
 }
 
 export default function RootLayout({
@@ -20,6 +42,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
