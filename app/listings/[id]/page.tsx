@@ -5,6 +5,18 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import Link from 'next/link'
 
+interface ListingPhoto {
+  id: string
+  path: string
+  width: number
+  height: number
+  sort_order: number
+}
+
+interface ListingPageProps {
+  params: { id: string }
+}
+
 interface ListingPageProps {
   params: { id: string }
 }
@@ -86,8 +98,8 @@ export default async function ListingPage({ params }: ListingPageProps) {
               <h3 className="text-lg font-semibold text-gray-900">Photos</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {listing.listing_photos
-                  .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0))
-                  .map((photo) => (
+                  .sort((a: ListingPhoto, b: ListingPhoto) => (a.sort_order || 0) - (b.sort_order || 0))
+                  .map((photo: ListingPhoto) => (
                     <div key={photo.id} className="relative group">
                                               <img
                           src={`${process.env.SUPABASE_URL || 'https://your-project.supabase.co'}/storage/v1/object/public/listing-photos/${photo.path}`}
