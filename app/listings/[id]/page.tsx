@@ -24,9 +24,6 @@ interface ListingPageProps {
 export default async function ListingPage({ params }: ListingPageProps) {
   const supabase = supabaseServer()
   
-  // Debug: Log environment variable
-  console.log('SUPABASE_URL:', process.env.SUPABASE_URL)
-  
   // Fetch the listing with profile, contact info, and photos
   const { data: listing, error } = await supabase
     .from('listings')
@@ -50,10 +47,6 @@ export default async function ListingPage({ params }: ListingPageProps) {
   if (error || !listing) {
     notFound()
   }
-
-  // Debug: Log photos data
-  console.log('Listing photos:', listing.listing_photos)
-  console.log('Photos count:', listing.listing_photos?.length || 0)
 
   // Format price from cents to dollars
   const priceInDollars = (listing.price / 100).toLocaleString('en-US', {
