@@ -101,8 +101,8 @@ export function FeaturedListings({ listings }: FeaturedListingsProps) {
                   <span className="inline-block h-2 w-4 rounded-sm bg-trd-orange" />
                   <span className="inline-block h-2 w-4 rounded-sm bg-trd-yellow" />
                 </div>
-                <CardTitle className="text-lg line-clamp-2">{listing.title}</CardTitle>
-                <div className="text-2xl font-bold text-blue-600">
+                <CardTitle className="text-lg line-clamp-2 text-gray-900 dark:text-white">{listing.title}</CardTitle>
+                <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                   {formatPrice(listing.price)}
                 </div>
               </CardHeader>

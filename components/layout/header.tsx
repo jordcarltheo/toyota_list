@@ -1,23 +1,13 @@
 "use client"
 
 import Link from 'next/link'
-import { useAuth } from '@/components/providers/auth-provider'
 import { Button } from '@/components/ui/button'
 import { getBrandName, getMarketCity } from '@/lib/utils'
-import { Car, Menu, X, User, Plus, MessageSquare } from 'lucide-react'
+import { Car, Menu, X, Plus } from 'lucide-react'
 import { useState } from 'react'
 
 export function Header() {
-  const { user, profile, signOut } = useAuth()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-
-  const handleSignOut = async () => {
-    try {
-      await signOut()
-    } catch (error) {
-      console.error('Error signing out:', error)
-    }
-  }
 
   return (
     <header className="bg-white shadow-sm border-b">
@@ -49,35 +39,12 @@ export function Header() {
               How it Works
             </Link>
             
-            {user ? (
-              <div className="flex items-center space-x-4">
-                <Link href="/sell">
-                  <Button size="sm" className="flex items-center space-x-2">
-                    <Plus className="h-4 w-4" />
-                    <span>List Your Car</span>
-                  </Button>
-                </Link>
-                <Link href="/messages">
-                  <Button variant="outline" size="sm" className="flex items-center space-x-2">
-                    <MessageSquare className="h-4 w-4" />
-                    <span>Messages</span>
-                  </Button>
-                </Link>
-                <Link href="/profile">
-                  <Button variant="ghost" size="sm" className="flex items-center space-x-2">
-                    <User className="h-4 w-4" />
-                    <span>{profile?.full_name || 'Profile'}</span>
-                  </Button>
-                </Link>
-                <Button variant="outline" size="sm" onClick={handleSignOut}>
-                  Sign Out
-                </Button>
-              </div>
-            ) : (
-              <Link href="/auth">
-                <Button>Sign In</Button>
-              </Link>
-            )}
+            <Link href="/sell">
+              <Button size="sm" className="flex items-center space-x-2 trd-btn-primary">
+                <Plus className="h-4 w-4" />
+                <span>List Your Toyota</span>
+              </Button>
+            </Link>
           </nav>
 
           {/* Mobile menu button */}
@@ -118,48 +85,13 @@ export function Header() {
                 How it Works
               </Link>
               
-              {user ? (
-                <>
-                  <Link
-                    href="/sell"
-                    className="block px-3 py-2 rounded-md text-base font-medium text-blue-600 hover:bg-blue-50"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    List Your Car
-                  </Link>
-                  <Link
-                    href="/messages"
-                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Messages
-                  </Link>
-                  <Link
-                    href="/profile"
-                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Profile
-                  </Link>
-                  <button
-                    onClick={() => {
-                      handleSignOut()
-                      setMobileMenuOpen(false)
-                    }}
-                    className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-red-50"
-                  >
-                    Sign Out
-                  </button>
-                </>
-              ) : (
-                <Link
-                  href="/auth"
-                  className="block px-3 py-2 rounded-md text-base font-medium text-blue-600 hover:bg-blue-50"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Sign In
-                </Link>
-              )}
+              <Link
+                href="/sell"
+                className="block px-3 py-2 rounded-md text-base font-medium text-blue-600 hover:bg-blue-50"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                List Your Toyota
+              </Link>
             </div>
           </div>
         )}

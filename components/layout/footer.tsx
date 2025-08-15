@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { getBrandName, getMarketCity } from '@/lib/utils'
 import { Car } from 'lucide-react'
+import { ThemeToggle } from '@/components/ThemeToggle'
 
 export function Footer() {
   return (
@@ -92,6 +93,7 @@ export function Footer() {
               <Link href="/terms" className="text-gray-400 hover:text-white text-sm transition-colors">
                 Terms of Service
               </Link>
+              <ThemeToggle />
             </div>
           </div>
         </div>
