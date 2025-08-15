@@ -12,6 +12,9 @@ interface ListingPageProps {
 export default async function ListingPage({ params }: ListingPageProps) {
   const supabase = supabaseServer()
   
+  // Debug: Log environment variable
+  console.log('SUPABASE_URL:', process.env.SUPABASE_URL)
+  
   // Fetch the listing with profile, contact info, and photos
   const { data: listing, error } = await supabase
     .from('listings')
@@ -35,6 +38,10 @@ export default async function ListingPage({ params }: ListingPageProps) {
   if (error || !listing) {
     notFound()
   }
+
+  // Debug: Log photos data
+  console.log('Listing photos:', listing.listing_photos)
+  console.log('Photos count:', listing.listing_photos?.length || 0)
 
   // Format price from cents to dollars
   const priceInDollars = (listing.price / 100).toLocaleString('en-US', {
@@ -83,7 +90,7 @@ export default async function ListingPage({ params }: ListingPageProps) {
                   .map((photo) => (
                     <div key={photo.id} className="relative group">
                                               <img
-                          src={`${process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://your-project.supabase.co'}/storage/v1/object/public/listing-photos/${photo.path}`}
+                          src={`${process.env.SUPABASE_URL || 'https://your-project.supabase.co'}/storage/v1/object/public/listing-photos/${photo.path}`}
                           alt={`Vehicle photo`}
                           className="w-full h-48 object-cover rounded-lg shadow-md hover:shadow-lg transition-shadow"
                           onError={(e) => {
