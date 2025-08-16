@@ -27,11 +27,13 @@ export default async function ListingPage({ params }: ListingPageProps) {
     notFound()
   }
 
+  let listing: any = null
+
   try {
     const supabase = supabaseServer()
     
     // Fetch the listing with profile, contact info, and photos
-    const { data: listing, error } = await supabase
+    const { data, error } = await supabase
       .from('listings')
       .select(`
         *,
@@ -50,9 +52,11 @@ export default async function ListingPage({ params }: ListingPageProps) {
       .eq('status', 'active')
       .single()
 
-    if (error || !listing) {
+    if (error || !data) {
       notFound()
     }
+
+    listing = data
 
   } catch (error) {
     console.error('Error fetching listing:', error)
