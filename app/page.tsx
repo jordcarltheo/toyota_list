@@ -20,32 +20,38 @@ export default async function HomePage({
   let selected = 'ALL'
   
   try {
-    const supabase = supabaseServer()
-    selected = (searchParams?.country || 'ALL').toUpperCase()
-
-    let query = supabase
-      .from('listings')
-      .select(`
-        *,
-        listing_photos(path, width, height, sort_order),
-        profiles!listings_user_id_fkey(id, full_name, role, created_at)
-      `)
-      .eq('status', 'active')
-      .order('created_at', { ascending: false })
-      .limit(24)
-
-    // Apply country filter if column exists
-    if (selected !== 'ALL') {
-      query = query.eq('location_country', selected)
-    }
-
-    const { data, error } = await query
-    
-    if (error) {
-      console.error('Error fetching listings:', error)
+    // Check if environment variables are set
+    if (!process.env.SUPABASE_URL && !process.env.NEXT_PUBLIC_SUPABASE_URL) {
+      console.warn('Supabase URL not configured, showing empty listings')
       listings = []
     } else {
-      listings = data || []
+      const supabase = supabaseServer()
+      selected = (searchParams?.country || 'ALL').toUpperCase()
+
+      let query = supabase
+        .from('listings')
+        .select(`
+          *,
+          listing_photos(path, width, height, sort_order),
+          profiles!listings_user_id_fkey(id, full_name, role, created_at)
+        `)
+        .eq('status', 'active')
+        .order('created_at', { ascending: false })
+        .limit(24)
+
+      // Apply country filter if column exists
+      if (selected !== 'ALL') {
+        query = query.eq('location_country', selected)
+      }
+
+      const { data, error } = await query
+      
+      if (error) {
+        console.error('Error fetching listings:', error)
+        listings = []
+      } else {
+        listings = data || []
+      }
     }
   } catch (error) {
     console.error('Error in HomePage:', error)

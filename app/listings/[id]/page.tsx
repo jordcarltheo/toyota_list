@@ -22,29 +22,40 @@ interface ListingPageProps {
 }
 
 export default async function ListingPage({ params }: ListingPageProps) {
-  const supabase = supabaseServer()
-  
-  // Fetch the listing with profile, contact info, and photos
-  const { data: listing, error } = await supabase
-    .from('listings')
-    .select(`
-      *,
-      profiles!listings_user_id_fkey (
-        full_name
-      ),
-      listing_photos (
-        id,
-        path,
-        width,
-        height,
-        sort_order
-      )
-    `)
-    .eq('id', params.id)
-    .eq('status', 'active')
-    .single()
+  // Check if environment variables are set
+  if (!process.env.SUPABASE_URL && !process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    notFound()
+  }
 
-  if (error || !listing) {
+  try {
+    const supabase = supabaseServer()
+    
+    // Fetch the listing with profile, contact info, and photos
+    const { data: listing, error } = await supabase
+      .from('listings')
+      .select(`
+        *,
+        profiles!listings_user_id_fkey (
+          full_name
+        ),
+        listing_photos (
+          id,
+          path,
+          width,
+          height,
+          sort_order
+        )
+      `)
+      .eq('id', params.id)
+      .eq('status', 'active')
+      .single()
+
+    if (error || !listing) {
+      notFound()
+    }
+
+  } catch (error) {
+    console.error('Error fetching listing:', error)
     notFound()
   }
 
