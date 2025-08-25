@@ -85,7 +85,7 @@
   color: #E5E5E5;
 }
 .dark .trd-btn-ghost:hover {
-  background: linear-gradient(90deg, rgba(238,28,37,0.12), rgba(249,157,28,0.12) 60%, rgba(255,209,0,0.12));
+  background: linear-gradient(90deg, rgba(238,28,37,0.12), rgba(249,157,28,0.12) 60%, rgba(255,209,0.12));
 }
 
 /* Cards / sections if you used .bg-white in components */
