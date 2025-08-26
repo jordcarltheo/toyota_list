@@ -50,7 +50,7 @@ export default function ContactPage() {
               Contact Us
             </h1>
             <p className="text-lg text-gray-600 dark:text-gray-300">
-              Have questions? We're here to help. Reach out to our support team.
+              Have questions? We&apos;re here to help. Reach out to our support team.
             </p>
           </div>
 
@@ -61,7 +61,7 @@ export default function ContactPage() {
                 <CardHeader>
                   <CardTitle className="text-xl">Get in Touch</CardTitle>
                   <CardDescription>
-                    We're here to help with any questions about buying, selling, or using ToyotaList.com
+                    We&apos;re here to help with any questions about buying, selling, or using ToyotaList.com
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -98,14 +98,14 @@ export default function ContactPage() {
                 <CardHeader>
                   <CardTitle>Send us a Message</CardTitle>
                   <CardDescription>
-                    Fill out the form below and we'll get back to you as soon as possible.
+                    Fill out the form below and we&apos;ll get back to you as soon as possible.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   {submitStatus === 'success' && (
                     <div className="mb-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
                       <p className="text-green-800 dark:text-green-200">
-                        Thank you! Your message has been sent. We'll get back to you within 24 hours.
+                        Thank you! Your message has been sent. We&apos;ll get back to you within 24 hours.
                       </p>
                     </div>
                   )}

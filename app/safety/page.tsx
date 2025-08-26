@@ -64,7 +64,7 @@ export default function SafetyPage() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600 dark:text-gray-300">
-                    If something feels off, don't proceed with the transaction. Your safety comes first.
+                    If something feels off, don&apos;t proceed with the transaction. Your safety comes first.
                   </p>
                 </CardContent>
               </Card>
@@ -114,7 +114,7 @@ export default function SafetyPage() {
                 <CardContent className="space-y-3">
                   <div className="flex items-start space-x-2">
                     <CheckCircle className="h-4 w-4 text-green-600 mt-0.5" />
-                    <p className="text-gray-600 dark:text-gray-300">Use secure payment methods (bank transfer, cashier's check)</p>
+                    <p className="text-gray-600 dark:text-gray-300">Use secure payment methods (bank transfer, cashier&apos;s check)</p>
                   </div>
                   <div className="flex items-start space-x-2">
                     <CheckCircle className="h-4 w-4 text-green-600 mt-0.5" />
@@ -126,7 +126,7 @@ export default function SafetyPage() {
                   </div>
                   <div className="flex items-start space-x-2">
                     <CheckCircle className="h-4 w-4 text-green-600 mt-0.5" />
-                    <p className="text-gray-600 dark:text-gray-300">Verify the seller's identity and vehicle ownership</p>
+                    <p className="text-gray-600 dark:text-gray-300">Verify the seller&apos;s identity and vehicle ownership</p>
                   </div>
                 </CardContent>
               </Card>
@@ -157,7 +157,7 @@ export default function SafetyPage() {
                   </div>
                   <div className="flex items-start space-x-2">
                     <CheckCircle className="h-4 w-4 text-blue-600 mt-0.5" />
-                    <p className="text-gray-600 dark:text-gray-300">Don't let strangers test drive alone</p>
+                    <p className="text-gray-600 dark:text-gray-300">Don&apos;t let strangers test drive alone</p>
                   </div>
                   <div className="flex items-start space-x-2">
                     <CheckCircle className="h-4 w-4 text-blue-600 mt-0.5" />
