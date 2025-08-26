@@ -11,54 +11,107 @@ import { Upload, X } from 'lucide-react'
 
 // Toyota model data with body types and available trims
 const toyotaModels = {
-  'Camry': {
-    bodyType: 'Sedan',
-    trims: ['LE', 'SE', 'XLE', 'XSE', 'Nightshade', 'TRD']
-  },
-  'Corolla': {
-    bodyType: 'Sedan',
-    trims: ['L', 'LE', 'SE', 'XLE', 'XSE', 'Nightshade', 'Apex']
-  },
-  'Avalon': {
-    bodyType: 'Sedan',
-    trims: ['XLE', 'XSE', 'Limited', 'Touring']
-  },
-  'Prius': {
-    bodyType: 'Sedan',
-    trims: ['LE', 'XLE', 'Limited']
-  },
-  'RAV4': {
-    bodyType: 'SUV',
-    trims: ['LE', 'XLE', 'XLE Premium', 'Adventure', 'TRD Off-Road', 'Limited', 'Prime']
-  },
-  'Highlander': {
-    bodyType: 'SUV',
-    trims: ['L', 'LE', 'XLE', 'Limited', 'Platinum']
-  },
-  '4Runner': {
-    bodyType: 'SUV',
-    trims: ['SR5', 'TRD Off-Road', 'TRD Off-Road Premium', 'Limited', 'TRD Pro']
-  },
-  'Tacoma': {
-    bodyType: 'Truck',
-    trims: ['SR', 'SR5', 'TRD Sport', 'TRD Off-Road', 'TRD Pro', 'Limited']
-  },
-  'Tundra': {
-    bodyType: 'Truck',
-    trims: ['SR', 'SR5', 'Limited', 'Platinum', '1794 Edition', 'TRD Pro']
-  },
-  'Sienna': {
-    bodyType: 'Van',
-    trims: ['L', 'LE', 'XLE', 'Limited', 'Platinum']
-  },
-  'C-HR': {
-    bodyType: 'SUV',
-    trims: ['LE', 'XLE', 'Nightshade']
-  },
-  'Venza': {
-    bodyType: 'SUV',
-    trims: ['LE', 'XLE', 'Limited']
-  }
+  // Pre-War Era (1930s-1940s) - Classic Models
+  'AA': { bodyType: 'Sedan', trims: ['Base'] },
+  'AB': { bodyType: 'Sedan', trims: ['Base'] },
+  'AC': { bodyType: 'Sedan', trims: ['Base'] },
+  'AE': { bodyType: 'Sedan', trims: ['Base'] },
+  'BA': { bodyType: 'Sedan', trims: ['Base'] },
+  'BC': { bodyType: 'Sedan', trims: ['Base'] },
+  'BE': { bodyType: 'Sedan', trims: ['Base'] },
+  'BF': { bodyType: 'Sedan', trims: ['Base'] },
+  'BG': { bodyType: 'Sedan', trims: ['Base'] },
+  'BH': { bodyType: 'Sedan', trims: ['Base'] },
+  'BJ': { bodyType: 'Sedan', trims: ['Base'] },
+  'BK': { bodyType: 'Sedan', trims: ['Base'] },
+  'BL': { bodyType: 'Sedan', trims: ['Base'] },
+  'BM': { bodyType: 'Sedan', trims: ['Base'] },
+  'BN': { bodyType: 'Sedan', trims: ['Base'] },
+  'BO': { bodyType: 'Sedan', trims: ['Base'] },
+  'BP': { bodyType: 'Sedan', trims: ['Base'] },
+  'BQ': { bodyType: 'Sedan', trims: ['Base'] },
+  'BR': { bodyType: 'Sedan', trims: ['Base'] },
+  'BS': { bodyType: 'Sedan', trims: ['Base'] },
+  'BT': { bodyType: 'Sedan', trims: ['Base'] },
+  'BU': { bodyType: 'Sedan', trims: ['Base'] },
+  'BV': { bodyType: 'Sedan', trims: ['Base'] },
+  'BW': { bodyType: 'Sedan', trims: ['Base'] },
+  'BX': { bodyType: 'Sedan', trims: ['Base'] },
+  'BY': { bodyType: 'Sedan', trims: ['Base'] },
+  'BZ': { bodyType: 'Sedan', trims: ['Base'] },
+  
+  // 1950s-1960s Models
+  'Crown': { bodyType: 'Sedan', trims: ['Base', 'Deluxe', 'Super Deluxe', 'Royal', 'Royal Saloon', 'Athlete', 'Majesta'] },
+  'Corona': { bodyType: 'Sedan', trims: ['Base', 'Deluxe', 'Super Deluxe', '2000', '2000GT', '1600', '1800'] },
+  'Corolla': { bodyType: 'Sedan', trims: ['L', 'LE', 'SE', 'XLE', 'XSE', 'Nightshade', 'Apex', 'S', 'SR5', 'DX', 'GL', 'XL', 'XLi', 'GT', 'GTS'] },
+  'Publica': { bodyType: 'Sedan', trims: ['Base', 'Deluxe', 'Super Deluxe', '1000', '1200'] },
+  'Sports 800': { bodyType: 'Coupe', trims: ['Base'] },
+  '2000GT': { bodyType: 'Coupe', trims: ['Base'] },
+  'Celica': { bodyType: 'Coupe', trims: ['ST', 'GT', 'GT-S', 'GTS', 'GT-Four', 'All-Trac', 'SS-I', 'SS-II', 'SS-III'] },
+  'Carina': { bodyType: 'Sedan', trims: ['Base', 'Deluxe', 'Super Deluxe', '1600', '1800', '2000', 'GT', 'GT-R'] },
+  'Mark II': { bodyType: 'Sedan', trims: ['Base', 'Deluxe', 'Super Deluxe', 'Grande', 'Grande G', 'Grande G Tourer', 'Blit', 'Qualis', 'Verossa', 'Chaser', 'Cresta'] },
+  'Cressida': { bodyType: 'Sedan', trims: ['Base', 'Deluxe', 'Super Deluxe', 'Grande', 'Grande G', 'Grande G Tourer'] },
+  'Century': { bodyType: 'Sedan', trims: ['Base', 'Royal Saloon', 'Royal Saloon G', 'Royal Saloon G Tourer'] },
+  'Crown Comfort': { bodyType: 'Sedan', trims: ['Base', 'Deluxe', 'Super Deluxe'] },
+  'Comfort': { bodyType: 'Sedan', trims: ['Base', 'Deluxe', 'Super Deluxe'] },
+  'Hiace': { bodyType: 'Van', trims: ['Base', 'Deluxe', 'Super Deluxe', 'Commuter', 'Commuter Deluxe', 'Commuter Super Deluxe'] },
+  'Dyna': { bodyType: 'Truck', trims: ['Base', 'Deluxe', 'Super Deluxe', '100', '150', '200', '250', '300', '350'] },
+  'Coaster': { bodyType: 'Van', trims: ['Base', 'Deluxe', 'Super Deluxe', 'Commuter', 'Commuter Deluxe', 'Commuter Super Deluxe'] },
+  'Land Cruiser': { bodyType: 'SUV', trims: ['Base', 'Deluxe', 'Super Deluxe', 'VX', 'VX Limited', 'VX-R', 'GX', 'GX-R', 'ZX', 'ZX-R', 'Heritage Edition'] },
+  'Stout': { bodyType: 'Truck', trims: ['Base', 'Deluxe', 'Super Deluxe', '1000', '1500', '2000'] },
+  'Tacoma': { bodyType: 'Truck', trims: ['SR', 'SR5', 'TRD Sport', 'TRD Off-Road', 'TRD Pro', 'Limited'] },
+  'Hilux': { bodyType: 'Truck', trims: ['Base', 'Deluxe', 'Super Deluxe', 'SR', 'SR5', 'SRV', 'G', 'GL', 'GLX', 'SR5 Extra Cab', 'SR5 Double Cab'] },
+  
+  // 1970s-1980s Models
+  'Camry': { bodyType: 'Sedan', trims: ['LE', 'SE', 'XLE', 'XSE', 'Nightshade', 'TRD', 'DX', 'GL', 'GLX', 'V6', 'V6 LE', 'V6 XLE'] },
+  'Avalon': { bodyType: 'Sedan', trims: ['XLE', 'XSE', 'Limited', 'Touring'] },
+  'Prius': { bodyType: 'Sedan', trims: ['LE', 'XLE', 'Limited', 'One', 'Two', 'Three', 'Four', 'Five', 'Touring'] },
+  'Prius Prime': { bodyType: 'Sedan', trims: ['SE', 'XSE', 'XSE Premium'] },
+  'RAV4': { bodyType: 'SUV', trims: ['LE', 'XLE', 'XLE Premium', 'Adventure', 'TRD Off-Road', 'Limited', 'Prime', 'Base', 'DX', 'GL', 'GLX', 'V6', 'V6 Limited'] },
+  'RAV4 Prime': { bodyType: 'SUV', trims: ['SE', 'XSE'] },
+  'RAV4 Hybrid': { bodyType: 'SUV', trims: ['LE', 'XLE', 'XLE Premium', 'Limited', 'Woodland Edition'] },
+  'Highlander': { bodyType: 'SUV', trims: ['L', 'LE', 'XLE', 'Limited', 'Platinum', 'Base', 'DX', 'GL', 'GLX', 'V6', 'V6 Limited'] },
+  'Highlander Hybrid': { bodyType: 'SUV', trims: ['LE', 'XLE', 'Limited', 'Platinum'] },
+  '4Runner': { bodyType: 'SUV', trims: ['SR5', 'TRD Off-Road', 'TRD Off-Road Premium', 'Limited', 'TRD Pro', 'Base', 'DX', 'GL', 'GLX', 'V6', 'V6 Limited'] },
+  'Tundra': { bodyType: 'Truck', trims: ['SR', 'SR5', 'Limited', 'Platinum', '1794 Edition', 'TRD Pro', 'Base', 'DX', 'GL', 'GLX', 'V8', 'V8 Limited'] },
+  'Sienna': { bodyType: 'Van', trims: ['L', 'LE', 'XLE', 'Limited', 'Platinum', 'Base', 'DX', 'GL', 'GLX', 'V6', 'V6 Limited'] },
+  'Sienna Hybrid': { bodyType: 'Van', trims: ['L', 'LE', 'XLE', 'Limited', 'Platinum'] },
+  'C-HR': { bodyType: 'SUV', trims: ['LE', 'XLE', 'Nightshade'] },
+  'Venza': { bodyType: 'SUV', trims: ['LE', 'XLE', 'Limited'] },
+  'bZ4X': { bodyType: 'SUV', trims: ['XLE', 'Limited'] },
+  'bZ4X AWD': { bodyType: 'SUV', trims: ['XLE', 'Limited'] },
+  'GR86': { bodyType: 'Coupe', trims: ['Base', 'Premium', '10th Anniversary Edition'] },
+  'GR Corolla': { bodyType: 'Sedan', trims: ['Core', 'Circuit Edition', 'Morizo Edition'] },
+  'GR Supra': { bodyType: 'Coupe', trims: ['2.0', '3.0', '3.0 Premium', 'A91-MT Edition', '45th Anniversary Edition'] },
+  'GR Yaris': { bodyType: 'Sedan', trims: ['Base', 'Premium', 'Circuit Pack'] },
+  'Matrix': { bodyType: 'Wagon', trims: ['Base', 'S', 'XRS'] },
+  'Yaris': { bodyType: 'Sedan', trims: ['L', 'LE', 'SE'] },
+  'Yaris Hatchback': { bodyType: 'Wagon', trims: ['L', 'LE', 'SE'] },
+  'MR2': { bodyType: 'Coupe', trims: ['Base', 'Turbo', 'Spyder', 'S', 'GT', 'GT-S'] },
+  'Tercel': { bodyType: 'Sedan', trims: ['Base', 'DX', 'LE', 'SR5', 'GT', 'GT-S'] },
+  'Paseo': { bodyType: 'Coupe', trims: ['Base', 'S', 'GT'] },
+  'Echo': { bodyType: 'Sedan', trims: ['Base', 'DX', 'LE'] },
+  'Scion tC': { bodyType: 'Coupe', trims: ['Base', 'Release Series'] },
+  'Scion xB': { bodyType: 'Wagon', trims: ['Base', 'Release Series'] },
+  'Scion xD': { bodyType: 'Wagon', trims: ['Base', 'Release Series'] },
+  'FJ Cruiser': { bodyType: 'SUV', trims: ['Base', 'Trail Teams Special Edition'] },
+  'Sequoia': { bodyType: 'SUV', trims: ['SR5', 'Limited', 'Platinum', 'TRD Pro'] },
+  
+  // Hybrid Models
+  'Camry Hybrid': { bodyType: 'Sedan', trims: ['LE', 'SE', 'XLE', 'XSE'] },
+  'Corolla Hybrid': { bodyType: 'Sedan', trims: ['LE', 'SE'] },
+  
+  // Lexus Models
+  'Lexus ES': { bodyType: 'Sedan', trims: ['250', '300h', '350', '350 F Sport'] },
+  'Lexus IS': { bodyType: 'Sedan', trims: ['250', '300', '350', '500', '500 F Sport Performance'] },
+  'Lexus LS': { bodyType: 'Sedan', trims: ['500', '500h', '500 F Sport'] },
+  'Lexus LC': { bodyType: 'Coupe', trims: ['500', '500h', '500 Convertible'] },
+  'Lexus RC': { bodyType: 'Coupe', trims: ['300', '350', '500', '500 F Sport Performance'] },
+  'Lexus UX': { bodyType: 'SUV', trims: ['200', '250h', '250h F Sport'] },
+  'Lexus NX': { bodyType: 'SUV', trims: ['250', '350', '350h', '450h+'] },
+  'Lexus RX': { bodyType: 'SUV', trims: ['350', '350h', '450h+', '500h'] },
+  'Lexus GX': { bodyType: 'SUV', trims: ['460', '550', '550 Overtrail'] },
+  'Lexus LX': { bodyType: 'SUV', trims: ['500', '500 F Sport', '600h'] }
 }
 
 export default function SellPage() {
