@@ -11,35 +11,6 @@ import { Upload, X } from 'lucide-react'
 
 // Toyota model data with body types and available trims
 const toyotaModels = {
-  // Pre-War Era (1930s-1940s) - Classic Models
-  'AA': { bodyType: 'Sedan', trims: ['Base'] },
-  'AB': { bodyType: 'Sedan', trims: ['Base'] },
-  'AC': { bodyType: 'Sedan', trims: ['Base'] },
-  'AE': { bodyType: 'Sedan', trims: ['Base'] },
-  'BA': { bodyType: 'Sedan', trims: ['Base'] },
-  'BC': { bodyType: 'Sedan', trims: ['Base'] },
-  'BE': { bodyType: 'Sedan', trims: ['Base'] },
-  'BF': { bodyType: 'Sedan', trims: ['Base'] },
-  'BG': { bodyType: 'Sedan', trims: ['Base'] },
-  'BH': { bodyType: 'Sedan', trims: ['Base'] },
-  'BJ': { bodyType: 'Sedan', trims: ['Base'] },
-  'BK': { bodyType: 'Sedan', trims: ['Base'] },
-  'BL': { bodyType: 'Sedan', trims: ['Base'] },
-  'BM': { bodyType: 'Sedan', trims: ['Base'] },
-  'BN': { bodyType: 'Sedan', trims: ['Base'] },
-  'BO': { bodyType: 'Sedan', trims: ['Base'] },
-  'BP': { bodyType: 'Sedan', trims: ['Base'] },
-  'BQ': { bodyType: 'Sedan', trims: ['Base'] },
-  'BR': { bodyType: 'Sedan', trims: ['Base'] },
-  'BS': { bodyType: 'Sedan', trims: ['Base'] },
-  'BT': { bodyType: 'Sedan', trims: ['Base'] },
-  'BU': { bodyType: 'Sedan', trims: ['Base'] },
-  'BV': { bodyType: 'Sedan', trims: ['Base'] },
-  'BW': { bodyType: 'Sedan', trims: ['Base'] },
-  'BX': { bodyType: 'Sedan', trims: ['Base'] },
-  'BY': { bodyType: 'Sedan', trims: ['Base'] },
-  'BZ': { bodyType: 'Sedan', trims: ['Base'] },
-  
   // 1950s-1960s Models
   'Crown': { bodyType: 'Sedan', trims: ['Base', 'Deluxe', 'Super Deluxe', 'Royal', 'Royal Saloon', 'Athlete', 'Majesta'] },
   'Corona': { bodyType: 'Sedan', trims: ['Base', 'Deluxe', 'Super Deluxe', '2000', '2000GT', '1600', '1800'] },
