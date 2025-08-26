@@ -45,11 +45,7 @@ export function Footer() {
                   How It Works
                 </Link>
               </li>
-              <li>
-                <Link href="/fees" className="text-gray-300 hover:text-white transition-colors">
-                  Fees & Pricing
-                </Link>
-              </li>
+
             </ul>
           </div>
 
@@ -72,11 +68,7 @@ export function Footer() {
                   Contact
                 </Link>
               </li>
-              <li>
-                <Link href="/disclaimer" className="text-gray-300 hover:text-white transition-colors">
-                  Disclaimer
-                </Link>
-              </li>
+
             </ul>
           </div>
         </div>
