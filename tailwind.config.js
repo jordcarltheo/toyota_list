@@ -12,7 +12,6 @@ module.exports = {
       colors: {
         trd: {
           red: '#EE1C25',
-          blue: '#2563EB',
           orange: '#F99D1C',
           yellow: '#FFD100',
           charcoal: '#2B2B2B',
