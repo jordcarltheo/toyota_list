@@ -26,6 +26,7 @@ export interface Listing {
   postal_code?: string
   lat?: number
   lng?: number
+  vin?: string
   featured: boolean
   status: 'draft' | 'active' | 'pending_sale' | 'sold' | 'archived'
   created_at: string
