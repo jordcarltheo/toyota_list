@@ -167,13 +167,13 @@ export function StepByStepForm() {
         return (
           <div className="space-y-6">
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Enter Your Vehicle VIN</h2>
-              <p className="text-gray-600">We&apos;ll automatically populate your vehicle details</p>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Enter Your Vehicle VIN</h2>
+              <p className="text-gray-600 dark:text-gray-300">We&apos;ll automatically populate your vehicle details</p>
             </div>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                   Vehicle Identification Number (VIN) *
                 </label>
                 <div className="flex space-x-2">
@@ -192,21 +192,21 @@ export function StepByStepForm() {
                     {vinLookupLoading ? 'Looking up...' : 'Lookup'}
                   </Button>
                 </div>
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                   Enter the 17-character VIN found on your vehicle or registration
                 </p>
               </div>
 
               {vinLookupError && (
-                <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-red-800 text-sm">{vinLookupError}</p>
+                <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-lg">
+                  <p className="text-red-800 dark:text-red-300 text-sm">{vinLookupError}</p>
                 </div>
               )}
 
               {vinLookupData && (
-                <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                  <h3 className="font-medium text-green-800 mb-2">Vehicle Found!</h3>
-                  <div className="grid grid-cols-2 gap-2 text-sm">
+                <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg">
+                  <h3 className="font-medium text-green-800 dark:text-green-300 mb-2">Vehicle Found!</h3>
+                  <div className="grid grid-cols-2 gap-2 text-sm text-green-700 dark:text-green-200">
                     <div><span className="font-medium">Make:</span> {vinLookupData.make}</div>
                     <div><span className="font-medium">Model:</span> {vinLookupData.model}</div>
                     <div><span className="font-medium">Year:</span> {vinLookupData.year}</div>
@@ -227,13 +227,13 @@ export function StepByStepForm() {
         return (
           <div className="space-y-6">
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Vehicle Details</h2>
-              <p className="text-gray-600">Review and adjust the information from your VIN</p>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Vehicle Details</h2>
+              <p className="text-gray-600 dark:text-gray-300">Review and adjust the information from your VIN</p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Year *</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Year *</label>
                 <Input
                   type="number"
                   value={formData.year}
@@ -245,7 +245,7 @@ export function StepByStepForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Model *</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Model *</label>
                 <Input
                   value={formData.model}
                   onChange={(e) => updateFormData('model', e.target.value)}
@@ -254,7 +254,7 @@ export function StepByStepForm() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Trim (Optional)</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Trim (Optional)</label>
                 <Input
                   value={formData.trim}
                   onChange={(e) => updateFormData('trim', e.target.value)}
@@ -263,7 +263,7 @@ export function StepByStepForm() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Body Type *</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Body Type *</label>
                 <Select
                   value={formData.body_type}
                   onValueChange={(value: any) => updateFormData('body_type', value)}
@@ -282,7 +282,7 @@ export function StepByStepForm() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Transmission *</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Transmission *</label>
                 <Select
                   value={formData.transmission}
                   onValueChange={(value: any) => updateFormData('transmission', value)}
@@ -301,7 +301,7 @@ export function StepByStepForm() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Fuel Type *</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Fuel Type *</label>
                 <Select
                   value={formData.fuel}
                   onValueChange={(value: any) => updateFormData('fuel', value)}
@@ -320,7 +320,7 @@ export function StepByStepForm() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Drivetrain *</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Drivetrain *</label>
                 <Select
                   value={formData.drivetrain}
                   onValueChange={(value: any) => updateFormData('drivetrain', value)}
@@ -582,9 +582,9 @@ export function StepByStepForm() {
               <p className="text-gray-600">Please review all information before submitting</p>
             </div>
             
-            <div className="bg-gray-50 rounded-lg p-6 space-y-4">
-              <h3 className="font-semibold text-gray-900">Vehicle Information</h3>
-              <div className="grid grid-cols-2 gap-2 text-sm">
+            <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 space-y-4">
+              <h3 className="font-semibold text-gray-900 dark:text-white">Vehicle Information</h3>
+              <div className="grid grid-cols-2 gap-2 text-sm text-gray-700 dark:text-gray-200">
                 <div><span className="font-medium">VIN:</span> {formData.vin}</div>
                 <div><span className="font-medium">Year:</span> {formData.year}</div>
                 <div><span className="font-medium">Model:</span> {formData.model}</div>
@@ -595,20 +595,20 @@ export function StepByStepForm() {
                 <div><span className="font-medium">Condition:</span> {formData.condition}</div>
               </div>
               
-              <h3 className="font-semibold text-gray-900 pt-4">Location</h3>
-              <div className="text-sm">
+              <h3 className="font-semibold text-gray-900 dark:text-white pt-4">Location</h3>
+              <div className="text-sm text-gray-700 dark:text-gray-200">
                 {formData.city}, {formData.state} {formData.country}
               </div>
               
-              <h3 className="font-semibold text-gray-900 pt-4">Contact</h3>
-              <div className="text-sm">
+              <h3 className="font-semibold text-gray-900 dark:text-white pt-4">Contact</h3>
+              <div className="text-sm text-gray-700 dark:text-gray-200">
                 {formData.contactName} - {formData.contactEmail}
                 {formData.contactPhone && ` - ${formData.contactPhone}`}
               </div>
             </div>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <p className="text-blue-800 text-sm">
+            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-4">
+              <p className="text-blue-800 dark:text-blue-300 text-sm">
                 <strong>Next:</strong> After submitting, you&apos;ll be redirected to complete payment of the $99 listing fee.
               </p>
             </div>
@@ -625,8 +625,8 @@ export function StepByStepForm() {
       {/* Progress Bar */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-gray-700">Step {currentStep} of {steps.length}</span>
-          <span className="text-sm font-medium text-gray-700">{Math.round(progress)}% Complete</span>
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Step {currentStep} of {steps.length}</span>
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-200">{Math.round(progress)}% Complete</span>
         </div>
         <Progress value={progress} className="h-2" />
         
@@ -636,11 +636,11 @@ export function StepByStepForm() {
             <div
               key={step.id}
               className={`flex flex-col items-center ${
-                step.id <= currentStep ? 'text-blue-600' : 'text-gray-400'
+                step.id <= currentStep ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500'
               }`}
             >
               <div className={`w-8 h-8 rounded-full flex items-center justify-center mb-1 ${
-                step.id <= currentStep ? 'bg-blue-600 text-white' : 'bg-gray-200'
+                step.id <= currentStep ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-600'
               }`}>
                 {step.id < currentStep ? (
                   <CheckCircle className="h-5 w-5" />
@@ -650,21 +650,21 @@ export function StepByStepForm() {
                   </div>
                 )}
               </div>
-              <span className="text-xs text-center max-w-16">{step.title}</span>
+              <span className="text-xs text-center max-w-16 text-gray-900 dark:text-gray-200">{step.title}</span>
             </div>
           ))}
         </div>
       </div>
 
       {/* Step Content */}
-      <Card>
+      <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
         <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
+          <CardTitle className="flex items-center space-x-2 text-gray-900 dark:text-white">
             {React.createElement(steps[currentStep - 1].icon, { className: "h-6 w-6" })}
             <span>{steps[currentStep - 1].title}</span>
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="text-gray-900 dark:text-white">
           {renderStepContent()}
         </CardContent>
       </Card>
