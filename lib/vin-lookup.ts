@@ -59,6 +59,14 @@ export async function lookupVIN(vin: string): Promise<VINData | null> {
       }
     }
 
+    // Debug: Log all available fields to see what we're getting
+    console.log('NHTSA API Response for VIN:', cleanVIN)
+    data.Results.forEach((item: any) => {
+      if (item.Variable && item.Value && item.Value !== '0' && item.Value !== 'null') {
+        console.log(`${item.Variable}: ${item.Value}`)
+      }
+    })
+
     // Extract relevant information from NHTSA response
     const results = data.Results
     let vinData: VINData = {
@@ -93,10 +101,34 @@ export async function lookupVIN(vin: string): Promise<VINData | null> {
           case 'Transmission Style':
             vinData.transmission = mapTransmission(item.Value)
             break
+          case 'Transmission Type':
+            vinData.transmission = mapTransmission(item.Value)
+            break
+          case 'Transmission':
+            vinData.transmission = mapTransmission(item.Value)
+            break
+          case 'Trans':
+            vinData.transmission = mapTransmission(item.Value)
+            break
           case 'Fuel Type - Primary':
             vinData.fuelType = mapFuelType(item.Value)
             break
+          case 'Fuel Type':
+            vinData.fuelType = mapFuelType(item.Value)
+            break
           case 'Drive Type':
+            vinData.drivetrain = mapDrivetrain(item.Value)
+            break
+          case 'Drive Train':
+            vinData.drivetrain = mapDrivetrain(item.Value)
+            break
+          case 'Wheel Drive Type':
+            vinData.drivetrain = mapDrivetrain(item.Value)
+            break
+          case 'Drive':
+            vinData.drivetrain = mapDrivetrain(item.Value)
+            break
+          case 'Wheel Drive':
             vinData.drivetrain = mapDrivetrain(item.Value)
             break
           case 'Series':
@@ -117,16 +149,10 @@ export async function lookupVIN(vin: string): Promise<VINData | null> {
               vinData.engine = item.Value
             }
             break
-          case 'Transmission Type':
-            // Alternative transmission field
-            if (!vinData.transmission) {
-              vinData.transmission = mapTransmission(item.Value)
-            }
-            break
-          case 'Fuel Type':
-            // Alternative fuel type field
-            if (!vinData.fuelType) {
-              vinData.fuelType = mapFuelType(item.Value)
+          case 'Engine Model':
+            // Alternative engine field
+            if (!vinData.engine) {
+              vinData.engine = item.Value
             }
             break
         }
@@ -153,6 +179,8 @@ export async function lookupVIN(vin: string): Promise<VINData | null> {
     if (!vinData.transmission) vinData.transmission = 'Unknown'
     if (!vinData.fuelType) vinData.fuelType = 'Other'
     if (!vinData.drivetrain) vinData.drivetrain = 'Unknown'
+
+    console.log('Processed VIN Data:', vinData)
 
     return vinData
   } catch (error) {
@@ -205,7 +233,13 @@ function mapTransmission(nhtsaTransmission: string): string {
     'Semi-Automatic': 'Auto',
     'Automated Manual': 'Auto',
     'Direct Drive': 'Auto',
-    'Electric': 'Auto'
+    'Electric': 'Auto',
+    'AUTOMATIC': 'Auto',
+    'MANUAL': 'Manual',
+    'A/T': 'Auto',
+    'M/T': 'Manual',
+    'Continuously Variable': 'Auto',
+    'Continuously Variable Transmission': 'Auto'
   }
   
   return transmissionMap[nhtsaTransmission] || 'Unknown'
@@ -223,7 +257,11 @@ function mapFuelType(nhtsaFuelType: string): string {
     'Propane': 'Other',
     'Hydrogen': 'Other',
     'Biodiesel': 'Diesel',
-    'E85': 'Gas'
+    'E85': 'Gas',
+    'GASOLINE': 'Gas',
+    'DIESEL': 'Diesel',
+    'HYBRID': 'Hybrid',
+    'ELECTRIC': 'EV'
   }
   
   return fuelTypeMap[nhtsaFuelType] || 'Other'
@@ -243,7 +281,15 @@ function mapDrivetrain(nhtsaDriveType: string): string {
     '4X4': '4WD',
     '2WD': 'RWD',
     'Part-time 4WD': '4WD',
-    'Full-time 4WD': '4WD'
+    'Full-time 4WD': '4WD',
+    'FRONT-WHEEL DRIVE': 'FWD',
+    'REAR-WHEEL DRIVE': 'RWD',
+    'ALL-WHEEL DRIVE': 'AWD',
+    'FOUR-WHEEL DRIVE': '4WD',
+    'Front Wheel Drive': 'FWD',
+    'Rear Wheel Drive': 'RWD',
+    'All Wheel Drive': 'AWD',
+    'Four Wheel Drive': '4WD'
   }
   
   return drivetrainMap[nhtsaDriveType] || 'Unknown'

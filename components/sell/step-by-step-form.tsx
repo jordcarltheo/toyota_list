@@ -129,6 +129,7 @@ export function StepByStepForm() {
           ...prev,
           year: parseInt(vinData.year),
           model: vinData.model,
+          trim: vinData.trim || '',
           body_type: vinData.bodyType as any,
           transmission: vinData.transmission as any,
           fuel: vinData.fuelType as any,
