@@ -9,6 +9,7 @@ export interface VINData {
   engine: string
   transmission: string
   fuelType: string
+  drivetrain: string
   trim?: string
   series?: string
   error?: string
@@ -28,6 +29,7 @@ export async function lookupVIN(vin: string): Promise<VINData | null> {
         engine: '',
         transmission: '',
         fuelType: '',
+        drivetrain: '',
         error: 'VIN must be exactly 17 characters'
       }
     }
@@ -52,6 +54,7 @@ export async function lookupVIN(vin: string): Promise<VINData | null> {
         engine: '',
         transmission: '',
         fuelType: '',
+        drivetrain: '',
         error: 'No vehicle data found for this VIN'
       }
     }
@@ -66,6 +69,7 @@ export async function lookupVIN(vin: string): Promise<VINData | null> {
       engine: '',
       transmission: '',
       fuelType: '',
+      drivetrain: '',
     }
 
     results.forEach((item: any) => {
@@ -92,11 +96,38 @@ export async function lookupVIN(vin: string): Promise<VINData | null> {
           case 'Fuel Type - Primary':
             vinData.fuelType = mapFuelType(item.Value)
             break
+          case 'Drive Type':
+            vinData.drivetrain = mapDrivetrain(item.Value)
+            break
           case 'Series':
             vinData.series = item.Value
             break
           case 'Trim':
             vinData.trim = item.Value
+            break
+          case 'Vehicle Type':
+            // Sometimes body type is in Vehicle Type field
+            if (!vinData.bodyType) {
+              vinData.bodyType = mapBodyType(item.Value)
+            }
+            break
+          case 'Engine Configuration':
+            // Additional engine info
+            if (!vinData.engine) {
+              vinData.engine = item.Value
+            }
+            break
+          case 'Transmission Type':
+            // Alternative transmission field
+            if (!vinData.transmission) {
+              vinData.transmission = mapTransmission(item.Value)
+            }
+            break
+          case 'Fuel Type':
+            // Alternative fuel type field
+            if (!vinData.fuelType) {
+              vinData.fuelType = mapFuelType(item.Value)
+            }
             break
         }
       }
@@ -112,9 +143,16 @@ export async function lookupVIN(vin: string): Promise<VINData | null> {
         engine: '',
         transmission: '',
         fuelType: '',
+        drivetrain: '',
         error: 'Incomplete vehicle data from VIN lookup'
       }
     }
+
+    // Set defaults for missing fields
+    if (!vinData.bodyType) vinData.bodyType = 'Other'
+    if (!vinData.transmission) vinData.transmission = 'Unknown'
+    if (!vinData.fuelType) vinData.fuelType = 'Other'
+    if (!vinData.drivetrain) vinData.drivetrain = 'Unknown'
 
     return vinData
   } catch (error) {
@@ -127,6 +165,7 @@ export async function lookupVIN(vin: string): Promise<VINData | null> {
       engine: '',
       transmission: '',
       fuelType: '',
+      drivetrain: '',
       error: 'Failed to lookup VIN. Please try again or enter details manually.'
     }
   }
@@ -145,7 +184,14 @@ function mapBodyType(nhtsaBodyType: string): string {
     'Convertible': 'Coupe',
     'Pickup': 'Truck',
     'Minivan': 'Van',
-    'Crossover': 'SUV'
+    'Crossover': 'SUV',
+    'Passenger Car': 'Sedan',
+    'Multipurpose Passenger Vehicle (MPV)': 'SUV',
+    'Motorcycle': 'Other',
+    'Trailer': 'Other',
+    'Low Speed Vehicle (LSV)': 'Other',
+    'Bus': 'Other',
+    'Incomplete Vehicle': 'Other'
   }
   
   return bodyTypeMap[nhtsaBodyType] || 'Other'
@@ -156,7 +202,10 @@ function mapTransmission(nhtsaTransmission: string): string {
     'Automatic': 'Auto',
     'Manual': 'Manual',
     'CVT': 'Auto',
-    'Semi-Automatic': 'Auto'
+    'Semi-Automatic': 'Auto',
+    'Automated Manual': 'Auto',
+    'Direct Drive': 'Auto',
+    'Electric': 'Auto'
   }
   
   return transmissionMap[nhtsaTransmission] || 'Unknown'
@@ -169,8 +218,33 @@ function mapFuelType(nhtsaFuelType: string): string {
     'Hybrid': 'Hybrid',
     'Electric': 'EV',
     'Plug-in Hybrid': 'Hybrid',
-    'Flex Fuel': 'Gas'
+    'Flex Fuel': 'Gas',
+    'Natural Gas': 'Other',
+    'Propane': 'Other',
+    'Hydrogen': 'Other',
+    'Biodiesel': 'Diesel',
+    'E85': 'Gas'
   }
   
   return fuelTypeMap[nhtsaFuelType] || 'Other'
+}
+
+function mapDrivetrain(nhtsaDriveType: string): string {
+  const drivetrainMap: { [key: string]: string } = {
+    'FWD': 'FWD',
+    'RWD': 'RWD',
+    'AWD': 'AWD',
+    '4WD': '4WD',
+    '4x4': '4WD',
+    'Front-Wheel Drive': 'FWD',
+    'Rear-Wheel Drive': 'RWD',
+    'All-Wheel Drive': 'AWD',
+    'Four-Wheel Drive': '4WD',
+    '4X4': '4WD',
+    '2WD': 'RWD',
+    'Part-time 4WD': '4WD',
+    'Full-time 4WD': '4WD'
+  }
+  
+  return drivetrainMap[nhtsaDriveType] || 'Unknown'
 }

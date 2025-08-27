@@ -131,7 +131,8 @@ export function StepByStepForm() {
           model: vinData.model,
           body_type: vinData.bodyType as any,
           transmission: vinData.transmission as any,
-          fuel: vinData.fuelType as any
+          fuel: vinData.fuelType as any,
+          drivetrain: vinData.drivetrain as any
         }))
         setVinLookupError('')
       }
@@ -211,6 +212,9 @@ export function StepByStepForm() {
                     <div><span className="font-medium">Body Type:</span> {vinLookupData.bodyType}</div>
                     {vinLookupData.trim && <div><span className="font-medium">Trim:</span> {vinLookupData.trim}</div>}
                     {vinLookupData.engine && <div><span className="font-medium">Engine:</span> {vinLookupData.engine}</div>}
+                    <div><span className="font-medium">Transmission:</span> {vinLookupData.transmission}</div>
+                    <div><span className="font-medium">Fuel Type:</span> {vinLookupData.fuelType}</div>
+                    <div><span className="font-medium">Drivetrain:</span> {vinLookupData.drivetrain}</div>
                   </div>
                 </div>
               )}
