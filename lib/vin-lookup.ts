@@ -290,6 +290,23 @@ function mapFuelType(nhtsaFuelType: string): string {
 }
 
 function mapDrivetrain(nhtsaDriveType: string): string {
+  const input = nhtsaDriveType.toLowerCase()
+  
+  // Check for combined values first (like "4WD/4-Wheel Drive/4x4")
+  if (input.includes('4wd') || input.includes('4x4') || input.includes('four-wheel') || input.includes('4-wheel')) {
+    return '4WD'
+  }
+  if (input.includes('awd') || input.includes('all-wheel')) {
+    return 'AWD'
+  }
+  if (input.includes('fwd') || input.includes('front-wheel')) {
+    return 'FWD'
+  }
+  if (input.includes('rwd') || input.includes('rear-wheel') || input.includes('2wd')) {
+    return 'RWD'
+  }
+  
+  // Fallback to exact matches
   const drivetrainMap: { [key: string]: string } = {
     'FWD': 'FWD',
     'RWD': 'RWD',
