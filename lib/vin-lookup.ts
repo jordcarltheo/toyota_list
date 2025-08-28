@@ -10,6 +10,7 @@ export interface VINData {
   transmission: string
   fuelType: string
   drivetrain: string
+  cabSize?: string
   trim?: string
   series?: string
   error?: string
@@ -21,17 +22,18 @@ export async function lookupVIN(vin: string): Promise<VINData | null> {
     const cleanVIN = vin.replace(/\s/g, '').toUpperCase()
     
     if (cleanVIN.length !== 17) {
-      return {
-        make: '',
-        model: '',
-        year: '',
-        bodyType: '',
-        engine: '',
-        transmission: '',
-        fuelType: '',
-        drivetrain: '',
-        error: 'VIN must be exactly 17 characters'
-      }
+              return {
+          make: '',
+          model: '',
+          year: '',
+          bodyType: '',
+          engine: '',
+          transmission: '',
+          fuelType: '',
+          drivetrain: '',
+          cabSize: '',
+          error: 'VIN must be exactly 17 characters'
+        }
     }
 
     // Call NHTSA API
@@ -55,6 +57,7 @@ export async function lookupVIN(vin: string): Promise<VINData | null> {
         transmission: '',
         fuelType: '',
         drivetrain: '',
+        cabSize: '',
         error: 'No vehicle data found for this VIN'
       }
     }
@@ -78,6 +81,7 @@ export async function lookupVIN(vin: string): Promise<VINData | null> {
       transmission: '',
       fuelType: '',
       drivetrain: '',
+      cabSize: '',
     }
 
     // Variables to build engine description
@@ -152,6 +156,14 @@ export async function lookupVIN(vin: string): Promise<VINData | null> {
           case 'Trim':
             vinData.trim = item.Value
             break
+          case 'Trim2':
+            vinData.cabSize = mapCabSize(item.Value)
+            break
+          case 'Cab Type':
+            if (!vinData.cabSize) {
+              vinData.cabSize = mapCabSize(item.Value)
+            }
+            break
           case 'Vehicle Type':
             // Sometimes body type is in Vehicle Type field
             if (!vinData.bodyType) {
@@ -216,6 +228,7 @@ export async function lookupVIN(vin: string): Promise<VINData | null> {
       transmission: '',
       fuelType: '',
       drivetrain: '',
+      cabSize: '',
       error: 'Failed to lookup VIN. Please try again or enter details manually.'
     }
   }
@@ -332,6 +345,42 @@ function mapDrivetrain(nhtsaDriveType: string): string {
   }
   
   return drivetrainMap[nhtsaDriveType] || 'Unknown'
+}
+
+function mapCabSize(nhtsaCabSize: string): string {
+  const input = nhtsaCabSize.toLowerCase()
+  
+  // Map common cab size patterns
+  if (input.includes('double') || input.includes('extended')) {
+    return 'Double Cab'
+  }
+  if (input.includes('single') || input.includes('regular')) {
+    return 'Single Cab'
+  }
+  if (input.includes('crew') || input.includes('king')) {
+    return 'Crew Cab'
+  }
+  if (input.includes('super') || input.includes('quad')) {
+    return 'Super Cab'
+  }
+  if (input.includes('extra')) {
+    return 'Extra Cab'
+  }
+  
+  // Fallback to exact matches
+  const cabSizeMap: { [key: string]: string } = {
+    'Double Cab': 'Double Cab',
+    'Single Cab': 'Single Cab',
+    'Crew Cab': 'Crew Cab',
+    'Super Cab': 'Super Cab',
+    'Extra Cab': 'Extra Cab',
+    'Regular Cab': 'Single Cab',
+    'Extended Cab': 'Double Cab',
+    'King Cab': 'Crew Cab',
+    'Quad Cab': 'Super Cab'
+  }
+  
+  return cabSizeMap[nhtsaCabSize] || nhtsaCabSize
 }
 
 // Helper to format engine description consistently like "3.5L V6"
