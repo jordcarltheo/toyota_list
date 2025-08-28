@@ -274,26 +274,28 @@ export function StepByStepForm() {
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Cab Size (Optional)</label>
-                <Input
-                  value={formData.cabSize}
-                  onChange={(e) => updateFormData('cabSize', e.target.value)}
-                  placeholder="e.g., Double Cab, Crew Cab, Single Cab"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Number of Doors</label>
-                <Input
-                  type="number"
-                  value={formData.doors}
-                  onChange={(e) => updateFormData('doors', parseInt(e.target.value))}
-                  min="2"
-                  max="5"
-                  placeholder="e.g., 2, 4"
-                />
-              </div>
+              {formData.body_type === 'Truck' ? (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Cab Size (Optional)</label>
+                  <Input
+                    value={formData.cabSize}
+                    onChange={(e) => updateFormData('cabSize', e.target.value)}
+                    placeholder="e.g., Double Cab, Crew Cab, Single Cab"
+                  />
+                </div>
+              ) : (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Number of Doors</label>
+                  <Input
+                    type="number"
+                    value={formData.doors}
+                    onChange={(e) => updateFormData('doors', parseInt(e.target.value))}
+                    min="2"
+                    max="5"
+                    placeholder="e.g., 2, 4"
+                  />
+                </div>
+              )}
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Body Type *</label>
@@ -622,10 +624,8 @@ export function StepByStepForm() {
                 <div><span className="font-medium">Year:</span> {formData.year}</div>
                 <div><span className="font-medium">Model:</span> {formData.model}</div>
                 <div><span className="font-medium">Trim:</span> {formData.trim || 'Not specified'}</div>
-                {formData.body_type === 'Truck' ? (
+                {formData.body_type === 'Truck' && (
                   <div><span className="font-medium">Cab Size:</span> {formData.cabSize || 'Not specified'}</div>
-                ) : (
-                  <div><span className="font-medium">Doors:</span> {formData.doors}</div>
                 )}
                 <div><span className="font-medium">Body Type:</span> {formData.body_type}</div>
                 <div><span className="font-medium">Price:</span> ${formData.price.toLocaleString()}</div>
