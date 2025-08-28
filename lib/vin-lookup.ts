@@ -321,7 +321,7 @@ function mapDrivetrain(nhtsaDriveType: string): string {
   if (input.includes('fwd') || input.includes('front-wheel')) {
     return 'FWD'
   }
-  if (input.includes('rwd') || input.includes('rear-wheel') || input.includes('2wd')) {
+  if (input.includes('rwd') || input.includes('rear-wheel') || input.includes('2wd') || input.includes('4x2')) {
     return 'RWD'
   }
   
@@ -332,11 +332,13 @@ function mapDrivetrain(nhtsaDriveType: string): string {
     'AWD': 'AWD',
     '4WD': '4WD',
     '4x4': '4WD',
+    '4x2': 'RWD',
     'Front-Wheel Drive': 'FWD',
     'Rear-Wheel Drive': 'RWD',
     'All-Wheel Drive': 'AWD',
     'Four-Wheel Drive': '4WD',
     '4X4': '4WD',
+    '4X2': 'RWD',
     '2WD': 'RWD',
     'Part-time 4WD': '4WD',
     'Full-time 4WD': '4WD',
