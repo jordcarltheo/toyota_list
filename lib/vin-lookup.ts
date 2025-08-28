@@ -80,6 +80,12 @@ export async function lookupVIN(vin: string): Promise<VINData | null> {
       drivetrain: '',
     }
 
+    // Variables to build engine description
+    let displacementL = ''
+    let engineConfig = ''
+    let cylinders = ''
+    let engineModel = ''
+
     results.forEach((item: any) => {
       if (item.Variable && item.Value && item.Value !== '0' && item.Value !== 'null') {
         switch (item.Variable) {
@@ -96,7 +102,16 @@ export async function lookupVIN(vin: string): Promise<VINData | null> {
             vinData.bodyType = mapBodyType(item.Value)
             break
           case 'Engine Model':
-            vinData.engine = item.Value
+            engineModel = item.Value
+            break
+          case 'Displacement (L)':
+            displacementL = item.Value
+            break
+          case 'Engine Configuration':
+            engineConfig = item.Value
+            break
+          case 'Engine Number of Cylinders':
+            cylinders = item.Value
             break
           case 'Transmission Style':
             vinData.transmission = mapTransmission(item.Value)
@@ -145,19 +160,26 @@ export async function lookupVIN(vin: string): Promise<VINData | null> {
             break
           case 'Engine Configuration':
             // Additional engine info
-            if (!vinData.engine) {
-              vinData.engine = item.Value
+            if (!engineConfig) {
+              engineConfig = item.Value
             }
             break
           case 'Engine Model':
             // Alternative engine field
-            if (!vinData.engine) {
-              vinData.engine = item.Value
+            if (!engineModel) {
+              engineModel = item.Value
             }
             break
         }
       }
     })
+
+    // Build engine description
+    if (displacementL && engineConfig && cylinders) {
+      vinData.engine = `${displacementL}L ${engineConfig}${cylinders}`
+    } else if (engineModel) {
+      vinData.engine = engineModel
+    }
 
     // Validate required fields
     if (!vinData.make || !vinData.model || !vinData.year) {
