@@ -138,19 +138,19 @@ export async function lookupVIN(vin: string): Promise<VINData | null> {
             vinData.fuelType = mapFuelType(item.Value)
             break
           case 'Drive Type':
-            vinData.drivetrain = mapDrivetrain(item.Value)
+            vinData.drivetrain = mapDrivetrain(item.Value, vinData.bodyType)
             break
           case 'Drive Train':
-            vinData.drivetrain = mapDrivetrain(item.Value)
+            vinData.drivetrain = mapDrivetrain(item.Value, vinData.bodyType)
             break
           case 'Wheel Drive Type':
-            vinData.drivetrain = mapDrivetrain(item.Value)
+            vinData.drivetrain = mapDrivetrain(item.Value, vinData.bodyType)
             break
           case 'Drive':
-            vinData.drivetrain = mapDrivetrain(item.Value)
+            vinData.drivetrain = mapDrivetrain(item.Value, vinData.bodyType)
             break
           case 'Wheel Drive':
-            vinData.drivetrain = mapDrivetrain(item.Value)
+            vinData.drivetrain = mapDrivetrain(item.Value, vinData.bodyType)
             break
           case 'Series':
             vinData.series = item.Value
@@ -308,7 +308,7 @@ function mapFuelType(nhtsaFuelType: string): string {
   return fuelTypeMap[nhtsaFuelType] || 'Other'
 }
 
-function mapDrivetrain(nhtsaDriveType: string): string {
+function mapDrivetrain(nhtsaDriveType: string, bodyType?: string): string {
   const input = nhtsaDriveType.toLowerCase()
   
   // Check for combined values first (like "4WD/4-Wheel Drive/4x4")
@@ -321,7 +321,14 @@ function mapDrivetrain(nhtsaDriveType: string): string {
   if (input.includes('fwd') || input.includes('front-wheel')) {
     return 'FWD'
   }
-  if (input.includes('rwd') || input.includes('rear-wheel') || input.includes('2wd') || input.includes('4x2')) {
+  
+  // Special handling for 4x2 - depends on vehicle type
+  if (input.includes('4x2')) {
+    // For trucks, 4x2 typically means RWD; for other vehicles, it usually means FWD
+    return bodyType === 'Truck' ? 'RWD' : 'FWD'
+  }
+  
+  if (input.includes('rwd') || input.includes('rear-wheel') || input.includes('2wd')) {
     return 'RWD'
   }
   
@@ -332,13 +339,13 @@ function mapDrivetrain(nhtsaDriveType: string): string {
     'AWD': 'AWD',
     '4WD': '4WD',
     '4x4': '4WD',
-    '4x2': 'RWD',
+    '4x2': bodyType === 'Truck' ? 'RWD' : 'FWD',
     'Front-Wheel Drive': 'FWD',
     'Rear-Wheel Drive': 'RWD',
     'All-Wheel Drive': 'AWD',
     'Four-Wheel Drive': '4WD',
     '4X4': '4WD',
-    '4X2': 'RWD',
+    '4X2': bodyType === 'Truck' ? 'RWD' : 'FWD',
     '2WD': 'RWD',
     'Part-time 4WD': '4WD',
     'Full-time 4WD': '4WD',
