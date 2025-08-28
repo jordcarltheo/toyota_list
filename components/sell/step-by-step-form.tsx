@@ -162,7 +162,7 @@ export function StepByStepForm() {
     const messages = {
       'h': `Haha! A ${make}? How hilarious! You silly goose, this is ToyotaList.com, not ${make}List.com!`,
       'b': `Bummer! A ${make}? Better bring a Toyota or Lexus, you beautiful but bewildered buyer!`,
-      'f': `Foolish! A ${make}? Find yourself a Toyota or Lexus, you fabulous but forgetful friend!`,
+      'f': `Foolish! A Fucking ${make}?! Find yourself a phalic shaped fence post, and go fuck yourself with it!`,
       'c': `Come on! A ${make}? Clearly you need a Toyota or Lexus, you clever but confused customer!`,
       'd': `Duh! A ${make}? Don't be daft - drive a Toyota or Lexus, you delightful but dense driver!`,
       'g': `Geez! A ${make}? Get a grip and grab a Toyota or Lexus, you great but goofy gearhead!`,
