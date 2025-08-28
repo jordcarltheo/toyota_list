@@ -151,6 +151,42 @@ export function StepByStepForm() {
     }
   }
 
+  // Check if vehicle make is Toyota or Lexus
+  const isToyotaOrLexus = vinLookupData && (vinLookupData.make === 'TOYOTA' || vinLookupData.make === 'LEXUS')
+  
+  // Generate alliterative error message for non-Toyota vehicles
+  const getNonToyotaMessage = (make: string) => {
+    const makeLower = make.toLowerCase()
+    const firstLetter = makeLower.charAt(0)
+    
+    const messages = {
+      'h': `Haha! A ${make}? How hilarious! You silly goose, this is ToyotaList.com, not ${make}List.com!`,
+      'b': `Bummer! A ${make}? Better bring a Toyota or Lexus, you beautiful but bewildered buyer!`,
+      'f': `Foolish! A ${make}? Find yourself a Toyota or Lexus, you fabulous but forgetful friend!`,
+      'c': `Come on! A ${make}? Clearly you need a Toyota or Lexus, you clever but confused customer!`,
+      'd': `Duh! A ${make}? Don't be daft - drive a Toyota or Lexus, you delightful but dense driver!`,
+      'g': `Geez! A ${make}? Get a grip and grab a Toyota or Lexus, you great but goofy gearhead!`,
+      'j': `Jeez! A ${make}? Just join the Toyota or Lexus club, you joyful but jumbled joker!`,
+      'k': `Kidding me? A ${make}? Keep it real with a Toyota or Lexus, you kind but klutzy kid!`,
+      'l': `LOL! A ${make}? Let's stick to Toyota or Lexus, you lovely but loopy legend!`,
+      'm': `My my! A ${make}? Maybe try a Toyota or Lexus, you marvelous but mixed-up motorist!`,
+      'n': `No way! A ${make}? Not on ToyotaList.com, you nice but naive navigator!`,
+      'p': `Please! A ${make}? Pick a Toyota or Lexus, you perfect but puzzled person!`,
+      'q': `Quit it! A ${make}? Quick, get a Toyota or Lexus, you quirky but questionable driver!`,
+      'r': `Really? A ${make}? Ridiculous! Reach for a Toyota or Lexus, you radiant but ridiculous roadster!`,
+      's': `Seriously? A ${make}? Silly you! Select a Toyota or Lexus, you splendid but silly speedster!`,
+      't': `Too bad! A ${make}? Try a Toyota or Lexus, you terrific but thick-headed traveler!`,
+      'u': `Unbelievable! A ${make}? Use your head and get a Toyota or Lexus, you unique but unwise user!`,
+      'v': `Very funny! A ${make}? Visit Toyota or Lexus instead, you vibrant but vexing vehicle lover!`,
+      'w': `What? A ${make}? Wrong choice! Want a Toyota or Lexus, you wonderful but wacky wheelman!`,
+      'x': `X marks the spot for Toyota or Lexus! A ${make}? Xtra silly choice, you excellent but eccentric explorer!`,
+      'y': `Yikes! A ${make}? You need a Toyota or Lexus, you youthful but yawning yahoo!`,
+      'z': `Zounds! A ${make}? Zero chance! Zip over to Toyota or Lexus, you zesty but zany zoomer!`
+    }
+    
+    return messages[firstLetter as keyof typeof messages] || `Oops! A ${make}? Only Toyota or Lexus allowed here, you silly goose!`
+  }
+
   const nextStep = () => {
     if (currentStep < steps.length) {
       setCurrentStep(currentStep + 1)
@@ -210,26 +246,40 @@ export function StepByStepForm() {
               )}
 
               {vinLookupData && (
-                <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg">
-                  <h3 className="font-medium text-green-800 dark:text-green-300 mb-2">Vehicle Found!</h3>
-                  <div className="grid grid-cols-2 gap-2 text-sm text-green-700 dark:text-green-200">
-                    <div><span className="font-medium">Make:</span> {vinLookupData.make}</div>
-                    <div><span className="font-medium">Model:</span> {vinLookupData.model}</div>
-                    <div><span className="font-medium">Year:</span> {vinLookupData.year}</div>
-                    <div><span className="font-medium">Body Type:</span> {vinLookupData.bodyType}</div>
-                    {vinLookupData.trim && <div><span className="font-medium">Trim:</span> {vinLookupData.trim}</div>}
-                    {vinLookupData.bodyType === 'Truck' && vinLookupData.cabSize && (
-                      <div><span className="font-medium">Cab Size:</span> {vinLookupData.cabSize}</div>
-                    )}
-                    {vinLookupData.bodyType !== 'Truck' && vinLookupData.doors && (
-                      <div><span className="font-medium">Doors:</span> {vinLookupData.doors}</div>
-                    )}
-                    {vinLookupData.engine && <div><span className="font-medium">Engine:</span> {vinLookupData.engine}</div>}
-                    <div><span className="font-medium">Transmission:</span> {vinLookupData.transmission}</div>
-                    <div><span className="font-medium">Fuel Type:</span> {vinLookupData.fuelType}</div>
-                    <div><span className="font-medium">Drivetrain:</span> {vinLookupData.drivetrain}</div>
+                <>
+                  {/* Non-Toyota/Lexus Error Message */}
+                  {!isToyotaOrLexus && (
+                    <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                      <p className="text-red-800 font-medium text-center">
+                        {getNonToyotaMessage(vinLookupData.make)}
+                      </p>
+                    </div>
+                  )}
+                  
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                    <h3 className="text-green-800 font-semibold mb-3">Vehicle Found!</h3>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <div><span className="text-green-700 font-medium">Make:</span> {vinLookupData.make}</div>
+                        <div><span className="text-green-700 font-medium">Year:</span> {vinLookupData.year}</div>
+                        <div><span className="text-green-700 font-medium">Trim:</span> {vinLookupData.trim || 'Not specified'}</div>
+                        <div><span className="text-green-700 font-medium">Engine:</span> {vinLookupData.engine}</div>
+                        <div><span className="text-green-700 font-medium">Fuel Type:</span> {vinLookupData.fuelType}</div>
+                      </div>
+                      <div className="space-y-2">
+                        <div><span className="text-green-700 font-medium">Model:</span> {vinLookupData.model}</div>
+                        <div><span className="text-green-700 font-medium">Body Type:</span> {vinLookupData.bodyType}</div>
+                        {vinLookupData.bodyType === 'Truck' ? (
+                          <div><span className="text-green-700 font-medium">Cab Size:</span> {vinLookupData.cabSize || 'Not specified'}</div>
+                        ) : (
+                          <div><span className="text-green-700 font-medium">Doors:</span> {vinLookupData.doors}</div>
+                        )}
+                        <div><span className="text-green-700 font-medium">Transmission:</span> {vinLookupData.transmission}</div>
+                        <div><span className="text-green-700 font-medium">Drivetrain:</span> {vinLookupData.drivetrain}</div>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                </>
               )}
             </div>
           </div>
@@ -708,20 +758,21 @@ export function StepByStepForm() {
       </Card>
 
       {/* Navigation Buttons */}
-      <div className="flex justify-between mt-6">
+      <div className="flex justify-between mt-8">
         <Button
           variant="outline"
           onClick={prevStep}
-          disabled={currentStep === 1}
+          disabled={currentStep === 0}
+          className="px-6"
         >
           Previous
         </Button>
-        
         <Button
           onClick={nextStep}
-          disabled={currentStep === steps.length}
+          disabled={currentStep === steps.length - 1 || !vinLookupData || !isToyotaOrLexus}
+          className={`px-6 ${!vinLookupData || !isToyotaOrLexus ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
-          {currentStep === steps.length ? 'Submit Listing' : 'Next'}
+          Next
         </Button>
       </div>
     </div>
