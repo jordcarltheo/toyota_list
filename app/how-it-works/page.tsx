@@ -111,12 +111,46 @@ export default function HowItWorksPage() {
                     </ul>
                   </div>
                   <div className="lg:w-1/2">
-                    <div className="bg-gray-200 rounded-lg aspect-video flex items-center justify-center">
-                      <div className="text-center text-gray-500">
-                        <IconComponent className="h-16 w-16 mx-auto mb-4" />
-                        <p>Step {step.step} Illustration</p>
+                    {step.step === '1' ? (
+                      <div className="bg-gray-200 rounded-lg aspect-video flex items-center justify-center overflow-hidden">
+                        <img 
+                          src="/step 1 image.png" 
+                          alt="Step 1: Browse & Search Illustration" 
+                          className="w-full h-full object-cover rounded-lg"
+                        />
                       </div>
-                    </div>
+                    ) : step.step === '2' ? (
+                      <div className="bg-gray-200 rounded-lg aspect-video flex items-center justify-center overflow-hidden">
+                        <img 
+                          src="/step 2 image.png" 
+                          alt="Step 2: List Your Car Illustration" 
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+                      </div>
+                    ) : step.step === '3' ? (
+                      <div className="bg-gray-200 rounded-lg aspect-video flex items-center justify-center overflow-hidden">
+                        <img 
+                          src="/step 3 image.png" 
+                          alt="Step 3: Connect & Message Illustration" 
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+                      </div>
+                    ) : step.step === '4' ? (
+                      <div className="bg-gray-200 rounded-lg aspect-video flex items-center justify-center overflow-hidden">
+                        <img 
+                          src="/step 4 image.png" 
+                          alt="Step 4: Complete Transaction Illustration" 
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+                      </div>
+                    ) : (
+                      <div className="bg-gray-200 rounded-lg aspect-video flex items-center justify-center">
+                        <div className="text-center text-gray-500">
+                          <IconComponent className="h-16 w-16 mx-auto mb-4" />
+                          <p>Step {step.step} Illustration</p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               )
