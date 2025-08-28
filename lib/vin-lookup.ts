@@ -175,8 +175,8 @@ export async function lookupVIN(vin: string): Promise<VINData | null> {
     })
 
     // Build engine description
-    if (displacementL && engineConfig && cylinders) {
-      vinData.engine = `${displacementL}L ${engineConfig}${cylinders}`
+    if (displacementL || engineConfig || cylinders) {
+      vinData.engine = formatEngineDescription(displacementL, engineConfig, cylinders, engineModel)
     } else if (engineModel) {
       vinData.engine = engineModel
     }
@@ -315,4 +315,25 @@ function mapDrivetrain(nhtsaDriveType: string): string {
   }
   
   return drivetrainMap[nhtsaDriveType] || 'Unknown'
+}
+
+// Helper to format engine description consistently like "3.5L V6"
+function formatEngineDescription(displacementL: string, engineConfig: string, cylinders: string, fallbackModel: string): string {
+  const cleanDisplacement = displacementL ? displacementL.trim() : ''
+  const cfg = (engineConfig || '').toLowerCase()
+  let layout = ''
+  if (cfg.includes('v')) layout = 'V'
+  else if (cfg.includes('inline') || cfg.includes('in-line') || cfg.includes('straight') || cfg === 'i') layout = 'I'
+  else if (cfg.includes('flat') || cfg.includes('h') || cfg.includes('opposed') || cfg.includes('boxer')) layout = 'H'
+
+  const cyl = cylinders ? String(cylinders).replace(/[^0-9]/g, '') : ''
+
+  if (cleanDisplacement && layout && cyl) {
+    return `${cleanDisplacement}L ${layout}${cyl}`
+  }
+
+  // Fallbacks
+  if (cleanDisplacement && cyl) return `${cleanDisplacement}L ${cyl}-cyl`
+  if (fallbackModel) return fallbackModel
+  return ''
 }
