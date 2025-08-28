@@ -17,6 +17,7 @@ interface ListingFormData {
   model: string
   trim: string
   cabSize: string
+  doors: number
   price: number
   mileage: number
   condition: 'Excellent' | 'Good' | 'Fair' | 'Project'
@@ -82,6 +83,7 @@ export function StepByStepForm() {
     model: '',
     trim: '',
     cabSize: '',
+    doors: 4,
     price: 25000,
     mileage: 50000,
     condition: 'Good',
@@ -136,7 +138,8 @@ export function StepByStepForm() {
           transmission: vinData.transmission as any,
           fuel: vinData.fuelType as any,
           drivetrain: vinData.drivetrain as any,
-          cabSize: vinData.cabSize || ''
+          cabSize: vinData.cabSize || '',
+          doors: vinData.doors || 0
         }))
         setVinLookupError('')
       }
@@ -215,7 +218,12 @@ export function StepByStepForm() {
                     <div><span className="font-medium">Year:</span> {vinLookupData.year}</div>
                     <div><span className="font-medium">Body Type:</span> {vinLookupData.bodyType}</div>
                     {vinLookupData.trim && <div><span className="font-medium">Trim:</span> {vinLookupData.trim}</div>}
-                    {vinLookupData.cabSize && <div><span className="font-medium">Cab Size:</span> {vinLookupData.cabSize}</div>}
+                    {vinLookupData.bodyType === 'Truck' && vinLookupData.cabSize && (
+                      <div><span className="font-medium">Cab Size:</span> {vinLookupData.cabSize}</div>
+                    )}
+                    {vinLookupData.bodyType !== 'Truck' && vinLookupData.doors && (
+                      <div><span className="font-medium">Doors:</span> {vinLookupData.doors}</div>
+                    )}
                     {vinLookupData.engine && <div><span className="font-medium">Engine:</span> {vinLookupData.engine}</div>}
                     <div><span className="font-medium">Transmission:</span> {vinLookupData.transmission}</div>
                     <div><span className="font-medium">Fuel Type:</span> {vinLookupData.fuelType}</div>
@@ -272,6 +280,18 @@ export function StepByStepForm() {
                   value={formData.cabSize}
                   onChange={(e) => updateFormData('cabSize', e.target.value)}
                   placeholder="e.g., Double Cab, Crew Cab, Single Cab"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Number of Doors</label>
+                <Input
+                  type="number"
+                  value={formData.doors}
+                  onChange={(e) => updateFormData('doors', parseInt(e.target.value))}
+                  min="2"
+                  max="5"
+                  placeholder="e.g., 2, 4"
                 />
               </div>
 
@@ -602,7 +622,11 @@ export function StepByStepForm() {
                 <div><span className="font-medium">Year:</span> {formData.year}</div>
                 <div><span className="font-medium">Model:</span> {formData.model}</div>
                 <div><span className="font-medium">Trim:</span> {formData.trim || 'Not specified'}</div>
-                <div><span className="font-medium">Cab Size:</span> {formData.cabSize || 'Not specified'}</div>
+                {formData.body_type === 'Truck' ? (
+                  <div><span className="font-medium">Cab Size:</span> {formData.cabSize || 'Not specified'}</div>
+                ) : (
+                  <div><span className="font-medium">Doors:</span> {formData.doors}</div>
+                )}
                 <div><span className="font-medium">Body Type:</span> {formData.body_type}</div>
                 <div><span className="font-medium">Price:</span> ${formData.price.toLocaleString()}</div>
                 <div><span className="font-medium">Mileage:</span> {formData.mileage.toLocaleString()} miles</div>

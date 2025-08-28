@@ -11,6 +11,7 @@ export interface VINData {
   fuelType: string
   drivetrain: string
   cabSize?: string
+  doors?: number
   trim?: string
   series?: string
   error?: string
@@ -82,6 +83,7 @@ export async function lookupVIN(vin: string): Promise<VINData | null> {
       fuelType: '',
       drivetrain: '',
       cabSize: '',
+      doors: 0,
     }
 
     // Variables to build engine description
@@ -164,6 +166,9 @@ export async function lookupVIN(vin: string): Promise<VINData | null> {
               vinData.cabSize = mapCabSize(item.Value)
             }
             break
+          case 'Doors':
+            vinData.doors = parseInt(item.Value) || 0
+            break
           case 'Vehicle Type':
             // Sometimes body type is in Vehicle Type field
             if (!vinData.bodyType) {
@@ -238,6 +243,7 @@ export async function lookupVIN(vin: string): Promise<VINData | null> {
 function mapBodyType(nhtsaBodyType: string): string {
   const bodyTypeMap: { [key: string]: string } = {
     'Sedan': 'Sedan',
+    'Sedan/Saloon': 'Sedan',
     'SUV': 'SUV',
     'Truck': 'Truck',
     'Van': 'Van',
