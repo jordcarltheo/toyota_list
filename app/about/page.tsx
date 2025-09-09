@@ -15,7 +15,7 @@ export default function AboutPage() {
               About {getBrandName()}
             </h1>
             <p className="text-xl text-gray-600">
-              The premier marketplace for Toyota enthusiasts across {getMarketCity()}
+              The premier marketplace for Toyota enthusiasts {getMarketCity()}
             </p>
           </div>
 
