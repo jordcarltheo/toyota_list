@@ -48,7 +48,7 @@ export default function AboutPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600">
-                  We prioritize safety and trust through verified users, secure messaging, 
+                  We prioritize safety and trust through verified users, 
                   and transparent fee structures.
                 </p>
               </CardContent>
@@ -82,8 +82,7 @@ export default function AboutPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600">
-                  Currently most active in Phoenix, with listings welcome from anywhere 
-                  across the U.S., Canada, and Mexico.
+                  Currently most active in Phoenix, with listings welcome from anywhere.
                 </p>
               </CardContent>
             </Card>
@@ -113,7 +112,7 @@ export default function AboutPage() {
                 <div>
                   <h4 className="font-semibold text-gray-900">National Marketplace</h4>
                   <p className="text-gray-600">
-                    Connect with Toyota enthusiasts across the U.S., Canada, and Mexico.
+                    Connect with Toyota enthusiasts nationwide.
                   </p>
                 </div>
               </div>
