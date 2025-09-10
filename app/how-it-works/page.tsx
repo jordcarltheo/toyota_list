@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { getBrandName } from '@/lib/utils'
 import { Search, Car, MessageSquare, Handshake, DollarSign, Shield, Users } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 const steps = [
   {
@@ -113,33 +114,41 @@ export default function HowItWorksPage() {
                   <div className="lg:w-1/2">
                     {step.step === '1' ? (
                       <div className="bg-gray-200 rounded-lg aspect-video flex items-center justify-center overflow-hidden">
-                        <img 
-                          src="/step 1 image.png" 
-                          alt="Step 1: Browse & Search Illustration" 
-                          className="w-full h-full object-cover rounded-lg"
-                        />
+            <Image
+              src="/step 1 image.png"
+              alt="Step 1: Browse & Search Illustration"
+              width={600}
+              height={400}
+              className="w-full h-full object-cover rounded-lg"
+            />
                       </div>
                     ) : step.step === '2' ? (
                       <div className="bg-gray-200 rounded-lg aspect-video flex items-center justify-center overflow-hidden">
-                        <img 
+                        <Image 
                           src="/step 2 image.png" 
-                          alt="Step 2: List Your Car Illustration" 
+                          alt="Step 2: List Your Car Illustration"
+                          width={600}
+                          height={400}
                           className="w-full h-full object-cover rounded-lg"
                         />
                       </div>
                     ) : step.step === '3' ? (
                       <div className="bg-gray-200 rounded-lg aspect-video flex items-center justify-center overflow-hidden">
-                        <img 
+                        <Image 
                           src="/step 3 image.png" 
-                          alt="Step 3: Connect & Message Illustration" 
+                          alt="Step 3: Connect & Message Illustration"
+                          width={600}
+                          height={400}
                           className="w-full h-full object-cover rounded-lg"
                         />
                       </div>
                     ) : step.step === '4' ? (
                       <div className="bg-gray-200 rounded-lg aspect-video flex items-center justify-center overflow-hidden">
-                        <img 
+                        <Image 
                           src="/step 4 image.png" 
-                          alt="Step 4: Complete Transaction Illustration" 
+                          alt="Step 4: Complete Transaction Illustration"
+                          width={600}
+                          height={400}
                           className="w-full h-full object-cover rounded-lg"
                         />
                       </div>

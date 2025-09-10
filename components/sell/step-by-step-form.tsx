@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState } from 'react'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -34,6 +35,7 @@ interface ListingFormData {
   contactName: string
   contactEmail: string
   contactPhone: string
+  photos: File[]
   hasAccident: boolean
   isCleanTitle: boolean
   hasMaintenanceRecords: boolean
@@ -102,6 +104,7 @@ export function StepByStepForm() {
     contactName: '',
     contactEmail: '',
     contactPhone: '',
+    photos: [],
     hasAccident: false,
     isCleanTitle: true,
     hasMaintenanceRecords: false,
@@ -112,8 +115,26 @@ export function StepByStepForm() {
   const [vinLookupLoading, setVinLookupLoading] = useState(false)
   const [vinLookupError, setVinLookupError] = useState('')
   const [zipLookupLoading, setZipLookupLoading] = useState(false)
+  const [photoPreview, setPhotoPreview] = useState<string[]>([])
 
   const progress = (currentStep / steps.length) * 100
+
+  const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files || [])
+    const newPhotos = [...formData.photos, ...files].slice(0, 10) // Max 10 photos
+    updateFormData('photos', newPhotos)
+    
+    // Create preview URLs
+    const newPreviews = files.map(file => URL.createObjectURL(file))
+    setPhotoPreview(prev => [...prev, ...newPreviews].slice(0, 10))
+  }
+
+  const removePhoto = (index: number) => {
+    const newPhotos = formData.photos.filter((_, i) => i !== index)
+    const newPreviews = photoPreview.filter((_, i) => i !== index)
+    updateFormData('photos', newPhotos)
+    setPhotoPreview(newPreviews)
+  }
 
   const handleZipLookup = async (zipCode: string) => {
     if (!zipCode || zipCode.length < 5) return
@@ -213,8 +234,85 @@ export function StepByStepForm() {
     return messages[firstLetter as keyof typeof messages] || `Oops! A ${make}? Only Toyota or Lexus allowed here, you silly goose!`
   }
 
+  // Validation functions for each step
+  const validateStep = (step: number): boolean => {
+    switch (step) {
+      case 1: // VIN Lookup
+        return !!(formData.vin && formData.vin.length === 17 && vinLookupData && isToyotaOrLexus)
+      
+      case 2: // Vehicle Details
+        return !!(formData.year && formData.model && formData.body_type && 
+                 formData.drivetrain && formData.transmission && formData.fuel)
+      
+      case 3: // Pricing & Condition
+        return !!(formData.price && formData.mileage && formData.condition && 
+                 formData.title && formData.description)
+      
+      case 4: // Location
+        return !!(formData.postalCode && formData.city && formData.state)
+      
+      case 5: // Contact Info
+        return !!(formData.contactName && formData.contactEmail && formData.contactPhone)
+      
+      case 6: // Photos
+        return true // Photos are optional for now
+      
+      case 7: // Review & Submit
+        return true // Final step
+      
+      default:
+        return false
+    }
+  }
+
+  const getValidationMessage = (step: number): string => {
+    switch (step) {
+      case 1:
+        if (!formData.vin || formData.vin.length !== 17) return 'Please enter a valid 17-character VIN'
+        if (!vinLookupData) return 'Please lookup your VIN first'
+        if (!isToyotaOrLexus) return 'Only Toyota and Lexus vehicles are allowed'
+        return ''
+      
+      case 2:
+        const missing = []
+        if (!formData.year) missing.push('Year')
+        if (!formData.model) missing.push('Model')
+        if (!formData.body_type) missing.push('Body Type')
+        if (!formData.drivetrain) missing.push('Drivetrain')
+        if (!formData.transmission) missing.push('Transmission')
+        if (!formData.fuel) missing.push('Fuel Type')
+        return missing.length > 0 ? `Please fill in: ${missing.join(', ')}` : ''
+      
+      case 3:
+        const missing3 = []
+        if (!formData.price) missing3.push('Price')
+        if (!formData.mileage) missing3.push('Mileage')
+        if (!formData.condition) missing3.push('Condition')
+        if (!formData.title) missing3.push('Title')
+        if (!formData.description) missing3.push('Description')
+        return missing3.length > 0 ? `Please fill in: ${missing3.join(', ')}` : ''
+      
+      case 4:
+        const missing4 = []
+        if (!formData.postalCode) missing4.push('ZIP Code')
+        if (!formData.city) missing4.push('City')
+        if (!formData.state) missing4.push('State')
+        return missing4.length > 0 ? `Please fill in: ${missing4.join(', ')}` : ''
+      
+      case 5:
+        const missing5 = []
+        if (!formData.contactName) missing5.push('Full Name')
+        if (!formData.contactEmail) missing5.push('Email')
+        if (!formData.contactPhone) missing5.push('Phone Number')
+        return missing5.length > 0 ? `Please fill in: ${missing5.join(', ')}` : ''
+      
+      default:
+        return ''
+    }
+  }
+
   const nextStep = () => {
-    if (currentStep < steps.length) {
+    if (currentStep < steps.length && validateStep(currentStep)) {
       setCurrentStep(currentStep + 1)
     }
   }
@@ -638,13 +736,68 @@ export function StepByStepForm() {
           <div className="space-y-6">
             <div className="text-center">
               <h2 className="text-2xl font-bold text-gray-900 mb-2">Vehicle Photos</h2>
-              <p className="text-gray-600">Upload photos of your vehicle</p>
+              <p className="text-gray-600">Upload photos of your vehicle (up to 10 photos)</p>
             </div>
             
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+            {/* Photo Upload Area */}
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-gray-400 transition-colors">
               <Camera className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600 mb-2">Photo upload functionality coming soon</p>
-              <p className="text-sm text-gray-500">For now, you can add photos after creating your listing</p>
+              <p className="text-gray-600 mb-4">Click to upload photos or drag and drop</p>
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={handlePhotoUpload}
+                className="hidden"
+                id="photo-upload"
+              />
+              <label
+                htmlFor="photo-upload"
+                className="bg-blue-600 text-white px-6 py-2 rounded-lg cursor-pointer hover:bg-blue-700 transition-colors"
+              >
+                Choose Photos
+              </label>
+              <p className="text-sm text-gray-500 mt-2">
+                JPG, PNG, or WebP. Max 10MB per photo.
+              </p>
+            </div>
+
+            {/* Photo Preview Grid */}
+            {photoPreview.length > 0 && (
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-gray-900">Uploaded Photos ({photoPreview.length}/10)</h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {photoPreview.map((preview, index) => (
+                    <div key={index} className="relative group">
+                      <Image
+                        src={preview}
+                        alt={`Vehicle photo ${index + 1}`}
+                        width={200}
+                        height={128}
+                        className="w-full h-32 object-cover rounded-lg border border-gray-200"
+                      />
+                      <button
+                        onClick={() => removePhoto(index)}
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600 transition-colors"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Photo Tips */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <h4 className="font-semibold text-blue-900 mb-2">Photo Tips:</h4>
+              <ul className="text-sm text-blue-800 space-y-1">
+                <li>• Take photos in good lighting</li>
+                <li>• Include exterior shots from multiple angles</li>
+                <li>• Show the interior, dashboard, and seats</li>
+                <li>• Include photos of any damage or wear</li>
+                <li>• Clean your vehicle before taking photos</li>
+              </ul>
             </div>
           </div>
         )
@@ -683,6 +836,24 @@ export function StepByStepForm() {
                 {formData.contactName} - {formData.contactEmail}
                 {formData.contactPhone && ` - ${formData.contactPhone}`}
               </div>
+
+              {photoPreview.length > 0 && (
+                <>
+                  <h3 className="font-semibold text-gray-900 dark:text-white pt-4">Photos ({photoPreview.length})</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                    {photoPreview.map((preview, index) => (
+                      <Image
+                        key={index}
+                        src={preview}
+                        alt={`Vehicle photo ${index + 1}`}
+                        width={100}
+                        height={80}
+                        className="w-full h-20 object-cover rounded border border-gray-200"
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
 
             <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-4">
@@ -747,6 +918,15 @@ export function StepByStepForm() {
         </CardContent>
       </Card>
 
+      {/* Validation Message */}
+      {!validateStep(currentStep) && getValidationMessage(currentStep) && (
+        <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <p className="text-red-800 text-sm font-medium">
+            {getValidationMessage(currentStep)}
+          </p>
+        </div>
+      )}
+
       {/* Navigation Buttons */}
       <div className="flex justify-between mt-8">
         <Button
@@ -759,8 +939,8 @@ export function StepByStepForm() {
         </Button>
         <Button
           onClick={nextStep}
-          disabled={currentStep === steps.length - 1 || !vinLookupData || !isToyotaOrLexus}
-          className={`px-6 ${!vinLookupData || !isToyotaOrLexus ? 'opacity-50 cursor-not-allowed' : ''}`}
+          disabled={currentStep === steps.length - 1 || !validateStep(currentStep)}
+          className={`px-6 ${!validateStep(currentStep) ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           Next
         </Button>

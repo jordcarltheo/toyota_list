@@ -7,6 +7,7 @@ import { Toaster } from '@/components/ui/toaster'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://www.toyotalist.com'),
   title: 'Toyota List - A list of Toyotas',
   description: 'A list of Toyotas. Buy & Sell Toyotas Across the U.S., Canada, and Mexico. Simple $99 seller fee & $10 buyer access.',
   keywords: 'Toyota marketplace, Toyota classified ads, buy and sell Toyotas, Toyota cars and trucks, Canada, Mexico, Toyota vehicles, Toyota marketplace',
