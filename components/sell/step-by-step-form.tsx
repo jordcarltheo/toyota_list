@@ -1054,10 +1054,10 @@ export function StepByStepForm() {
         </Button>
         <Button
           onClick={nextStep}
-          disabled={currentStep === steps.length - 1 || !validateStep(currentStep)}
+          disabled={!validateStep(currentStep)}
           className={`px-6 ${!validateStep(currentStep) ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
-          Next
+          {currentStep === steps.length - 1 ? 'Submit' : 'Next'}
         </Button>
       </div>
     </div>
