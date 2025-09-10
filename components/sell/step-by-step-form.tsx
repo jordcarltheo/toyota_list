@@ -939,14 +939,27 @@ export function StepByStepForm() {
                 <div><span className="font-medium">Price:</span> ${formData.price.toLocaleString()}</div>
                 <div><span className="font-medium">Mileage:</span> {formData.mileage.toLocaleString()} miles</div>
                 <div><span className="font-medium">Condition:</span> {formData.condition}</div>
+                <div><span className="font-medium">Title:</span> {formData.title}</div>
               </div>
+              
+              {formData.description && (
+                <div className="pt-2">
+                  <h4 className="font-medium text-gray-900 dark:text-white mb-1">Description</h4>
+                  <p className="text-sm text-gray-700 dark:text-gray-200 whitespace-pre-wrap">{formData.description}</p>
+                </div>
+              )}
               
               <h3 className="font-semibold text-gray-900 dark:text-white pt-4">Location</h3>
               <div className="text-sm text-gray-700 dark:text-gray-200">
                 {formData.city}, {formData.state} {formData.country}
               </div>
               
-              <h3 className="font-semibold text-gray-900 dark:text-white pt-4">Contact</h3>
+              <h3 className="font-semibold text-gray-900 dark:text-white pt-4">
+                Contact 
+                <span className="text-red-400 italic text-sm font-normal ml-2">
+                  (contact info won&apos;t be shown until buyers are verified)
+                </span>
+              </h3>
               <div className="text-sm text-gray-700 dark:text-gray-200">
                 {formData.contactName} - {formData.contactEmail}
                 {formData.contactPhone && ` - ${formData.contactPhone}`}
@@ -1057,7 +1070,7 @@ export function StepByStepForm() {
           disabled={!validateStep(currentStep)}
           className={`px-6 ${!validateStep(currentStep) ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
-          {currentStep === steps.length - 1 ? 'Submit' : 'Next'}
+          {currentStep === steps.length ? 'Submit' : 'Next'}
         </Button>
       </div>
     </div>
