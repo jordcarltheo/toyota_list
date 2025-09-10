@@ -23,7 +23,7 @@ interface ListingFormData {
   mileage: number
   condition: 'Excellent' | 'Good' | 'Fair' | 'Project'
   title: 'Clean' | 'Restored / Rebuilt' | 'Salvage'
-  body_type: 'Sedan' | 'SUV' | 'Truck' | 'Van' | 'Wagon' | 'Coupe' | 'Other'
+  body_type: 'Sedan' | 'SUV' | 'Truck' | 'Van' | 'Wagon' | 'Coupe' | 'Other' | 'Unknown'
   drivetrain: 'FWD' | 'RWD' | 'AWD' | '4WD' | 'Unknown'
   transmission: 'Auto' | 'Manual' | 'Unknown'
   fuel: 'Gas' | 'Diesel' | 'Hybrid' | 'EV' | 'Other'
@@ -52,7 +52,7 @@ const steps = [
   { id: 7, title: 'Review & Submit', icon: CheckCircle, description: 'Review your listing and submit' }
 ]
 
-const bodyTypes = ['Sedan', 'SUV', 'Truck', 'Van', 'Wagon', 'Coupe', 'Other']
+const bodyTypes = ['Sedan', 'SUV', 'Truck', 'Van', 'Wagon', 'Coupe', 'Other', 'Unknown']
 const conditions = ['Excellent', 'Good', 'Fair', 'Project']
 const titles = ['Clean', 'Restored / Rebuilt', 'Salvage']
 const drivetrains = ['FWD', 'RWD', 'AWD', '4WD', 'Unknown']
@@ -464,6 +464,32 @@ export function StepByStepForm() {
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Vehicle Details</h2>
               <p className="text-gray-600 dark:text-gray-300">Review and adjust the information from your VIN</p>
             </div>
+
+            {/* Warning for Unknown fields */}
+            {(formData.body_type === 'Unknown' || formData.transmission === 'Unknown' || formData.drivetrain === 'Unknown') && (
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg p-4">
+                <div className="flex items-start">
+                  <div className="flex-shrink-0">
+                    <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <h3 className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
+                      Some vehicle details need your attention
+                    </h3>
+                    <div className="mt-2 text-sm text-yellow-700 dark:text-yellow-300">
+                      <p>The VIN lookup couldn&apos;t determine some vehicle details. Please review and correct the highlighted fields below:</p>
+                      <ul className="mt-2 list-disc list-inside">
+                        {formData.body_type === 'Unknown' && <li>Body Type</li>}
+                        {formData.transmission === 'Unknown' && <li>Transmission</li>}
+                        {formData.drivetrain === 'Unknown' && <li>Drivetrain</li>}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -525,7 +551,7 @@ export function StepByStepForm() {
                   value={formData.body_type}
                   onValueChange={(value: any) => updateFormData('body_type', value)}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className={formData.body_type === 'Unknown' ? 'border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20' : ''}>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -536,6 +562,9 @@ export function StepByStepForm() {
                     ))}
                   </SelectContent>
                 </Select>
+                {formData.body_type === 'Unknown' && (
+                  <p className="text-yellow-600 dark:text-yellow-400 text-sm mt-1">⚠️ This field needs attention - please select the correct body type</p>
+                )}
               </div>
 
               <div>
@@ -544,7 +573,7 @@ export function StepByStepForm() {
                   value={formData.transmission}
                   onValueChange={(value: any) => updateFormData('transmission', value)}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className={formData.transmission === 'Unknown' ? 'border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20' : ''}>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -555,6 +584,9 @@ export function StepByStepForm() {
                     ))}
                   </SelectContent>
                 </Select>
+                {formData.transmission === 'Unknown' && (
+                  <p className="text-yellow-600 dark:text-yellow-400 text-sm mt-1">⚠️ This field needs attention - please select the correct transmission type</p>
+                )}
               </div>
 
               <div>
@@ -582,7 +614,7 @@ export function StepByStepForm() {
                   value={formData.drivetrain}
                   onValueChange={(value: any) => updateFormData('drivetrain', value)}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className={formData.drivetrain === 'Unknown' ? 'border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20' : ''}>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -593,6 +625,9 @@ export function StepByStepForm() {
                     ))}
                   </SelectContent>
                 </Select>
+                {formData.drivetrain === 'Unknown' && (
+                  <p className="text-yellow-600 dark:text-yellow-400 text-sm mt-1">⚠️ This field needs attention - please select the correct drivetrain type</p>
+                )}
               </div>
             </div>
           </div>
