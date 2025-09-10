@@ -119,6 +119,36 @@ export function StepByStepForm() {
 
   const progress = (currentStep / steps.length) * 100
 
+  // Email validation function
+  const isValidEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+  }
+
+  // Phone number formatting function
+  const formatPhoneNumber = (value: string): string => {
+    // Remove all non-numeric characters
+    const phoneNumber = value.replace(/\D/g, '')
+    
+    // Limit to 10 digits
+    const limitedPhone = phoneNumber.slice(0, 10)
+    
+    // Format as XXX-XXX-XXXX
+    if (limitedPhone.length >= 6) {
+      return `${limitedPhone.slice(0, 3)}-${limitedPhone.slice(3, 6)}-${limitedPhone.slice(6)}`
+    } else if (limitedPhone.length >= 3) {
+      return `${limitedPhone.slice(0, 3)}-${limitedPhone.slice(3)}`
+    } else {
+      return limitedPhone
+    }
+  }
+
+  // Phone number validation function
+  const isValidPhoneNumber = (phone: string): boolean => {
+    const phoneNumber = phone.replace(/\D/g, '')
+    return phoneNumber.length === 10
+  }
+
   const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || [])
     const newPhotos = [...formData.photos, ...files].slice(0, 10) // Max 10 photos
@@ -252,7 +282,13 @@ export function StepByStepForm() {
         return !!(formData.postalCode && formData.city && formData.state)
       
       case 5: // Contact Info
-        return !!(formData.contactName && formData.contactEmail && formData.contactPhone)
+        return !!(
+          formData.contactName && 
+          formData.contactEmail && 
+          isValidEmail(formData.contactEmail) &&
+          formData.contactPhone && 
+          isValidPhoneNumber(formData.contactPhone)
+        )
       
       case 6: // Photos
         return true // Photos are optional for now
@@ -304,7 +340,16 @@ export function StepByStepForm() {
         if (!formData.contactName) missing5.push('Full Name')
         if (!formData.contactEmail) missing5.push('Email')
         if (!formData.contactPhone) missing5.push('Phone Number')
-        return missing5.length > 0 ? `Please fill in: ${missing5.join(', ')}` : ''
+        
+        // Check for invalid formats
+        if (formData.contactEmail && !isValidEmail(formData.contactEmail)) {
+          missing5.push('Valid Email (format: user@example.com)')
+        }
+        if (formData.contactPhone && !isValidPhoneNumber(formData.contactPhone)) {
+          missing5.push('Valid Phone (format: XXX-XXX-XXXX)')
+        }
+        
+        return missing5.length > 0 ? `Please fix: ${missing5.join(', ')}` : ''
       
       default:
         return ''
@@ -713,19 +758,29 @@ export function StepByStepForm() {
                   type="email"
                   value={formData.contactEmail}
                   onChange={(e) => updateFormData('contactEmail', e.target.value)}
+                  placeholder="user@example.com"
+                  className={formData.contactEmail && !isValidEmail(formData.contactEmail) ? 'border-red-500' : ''}
                   required
                 />
+                {formData.contactEmail && !isValidEmail(formData.contactEmail) && (
+                  <p className="text-red-500 text-sm mt-1">Please enter a valid email address</p>
+                )}
               </div>
-
+              
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
                 <Input
                   type="tel"
                   value={formData.contactPhone}
-                  onChange={(e) => updateFormData('contactPhone', e.target.value)}
-                  placeholder="e.g., (555) 123-4567"
+                  onChange={(e) => updateFormData('contactPhone', formatPhoneNumber(e.target.value))}
+                  placeholder="XXX-XXX-XXXX"
+                  maxLength={12}
+                  className={formData.contactPhone && !isValidPhoneNumber(formData.contactPhone) ? 'border-red-500' : ''}
                   required
                 />
+                {formData.contactPhone && !isValidPhoneNumber(formData.contactPhone) && (
+                  <p className="text-red-500 text-sm mt-1">Please enter a valid 10-digit phone number</p>
+                )}
               </div>
             </div>
           </div>
