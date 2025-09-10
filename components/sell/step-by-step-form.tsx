@@ -151,11 +151,14 @@ export function StepByStepForm() {
 
   const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || [])
+    console.log('Files selected:', files)
     const newPhotos = [...formData.photos, ...files].slice(0, 10) // Max 10 photos
+    console.log('New photos array:', newPhotos)
     updateFormData('photos', newPhotos)
     
     // Create preview URLs
     const newPreviews = files.map(file => URL.createObjectURL(file))
+    console.log('New preview URLs:', newPreviews)
     setPhotoPreview(prev => [...prev, ...newPreviews].slice(0, 10))
   }
 
@@ -272,7 +275,8 @@ export function StepByStepForm() {
       
       case 2: // Vehicle Details
         return !!(formData.year && formData.model && formData.body_type && 
-                 formData.drivetrain && formData.transmission && formData.fuel)
+                 formData.drivetrain && formData.transmission && formData.fuel &&
+                 formData.drivetrain !== 'Unknown' && formData.transmission !== 'Unknown')
       
       case 3: // Pricing & Condition
         return !!(formData.price && formData.mileage && formData.condition && 
@@ -291,6 +295,10 @@ export function StepByStepForm() {
         )
       
       case 6: // Photos
+        console.log('Photo validation - formData.photos:', formData.photos)
+        console.log('Photo validation - formData.photos.length:', formData.photos.length)
+        console.log('Photo validation - photoPreview:', photoPreview)
+        console.log('Photo validation - photoPreview.length:', photoPreview.length)
         return formData.photos.length >= 3
       
       case 7: // Review & Submit
@@ -317,7 +325,12 @@ export function StepByStepForm() {
         if (!formData.drivetrain) missing.push('Drivetrain')
         if (!formData.transmission) missing.push('Transmission')
         if (!formData.fuel) missing.push('Fuel Type')
-        return missing.length > 0 ? `Please fill in: ${missing.join(', ')}` : ''
+        
+        // Check for Unknown values that need to be corrected
+        if (formData.drivetrain === 'Unknown') missing.push('Drivetrain (select correct type)')
+        if (formData.transmission === 'Unknown') missing.push('Transmission (select correct type)')
+        
+        return missing.length > 0 ? `Please fix: ${missing.join(', ')}` : ''
       
       case 3:
         const missing3 = []
