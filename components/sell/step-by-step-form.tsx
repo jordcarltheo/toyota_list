@@ -21,6 +21,7 @@ interface ListingFormData {
   price: number
   mileage: number
   condition: 'Excellent' | 'Good' | 'Fair' | 'Project'
+  title: 'Clean' | 'Restored / Rebuilt' | 'Salvage'
   body_type: 'Sedan' | 'SUV' | 'Truck' | 'Van' | 'Wagon' | 'Coupe' | 'Other'
   drivetrain: 'FWD' | 'RWD' | 'AWD' | '4WD' | 'Unknown'
   transmission: 'Auto' | 'Manual' | 'Unknown'
@@ -51,6 +52,7 @@ const steps = [
 
 const bodyTypes = ['Sedan', 'SUV', 'Truck', 'Van', 'Wagon', 'Coupe', 'Other']
 const conditions = ['Excellent', 'Good', 'Fair', 'Project']
+const titles = ['Clean', 'Restored / Rebuilt', 'Salvage']
 const drivetrains = ['FWD', 'RWD', 'AWD', '4WD', 'Unknown']
 const transmissions = ['Auto', 'Manual', 'Unknown']
 const fuels = ['Gas', 'Diesel', 'Hybrid', 'EV', 'Other']
@@ -87,6 +89,7 @@ export function StepByStepForm() {
     price: 25000,
     mileage: 50000,
     condition: 'Good',
+    title: 'Clean',
     body_type: 'Sedan',
     drivetrain: 'FWD',
     transmission: 'Auto',
@@ -108,8 +111,31 @@ export function StepByStepForm() {
   const [vinLookupData, setVinLookupData] = useState<VINData | null>(null)
   const [vinLookupLoading, setVinLookupLoading] = useState(false)
   const [vinLookupError, setVinLookupError] = useState('')
+  const [zipLookupLoading, setZipLookupLoading] = useState(false)
 
   const progress = (currentStep / steps.length) * 100
+
+  const handleZipLookup = async (zipCode: string) => {
+    if (!zipCode || zipCode.length < 5) return
+
+    setZipLookupLoading(true)
+    try {
+      // Using a free zip code API
+      const response = await fetch(`https://api.zippopotam.us/us/${zipCode}`)
+      if (response.ok) {
+        const data = await response.json()
+        if (data.places && data.places.length > 0) {
+          const place = data.places[0]
+          updateFormData('city', place['place name'])
+          updateFormData('state', place['state abbreviation'])
+        }
+      }
+    } catch (error) {
+      console.error('Zip code lookup failed:', error)
+    } finally {
+      setZipLookupLoading(false)
+    }
+  }
 
   const handleVINLookup = async () => {
     if (!formData.vin || formData.vin.length !== 17) {
@@ -256,29 +282,32 @@ export function StepByStepForm() {
                     </div>
                   )}
                   
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-                    <h3 className="text-green-800 font-semibold mb-3">Vehicle Found!</h3>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <div><span className="text-green-700 font-medium">Make:</span> {vinLookupData.make}</div>
-                        <div><span className="text-green-700 font-medium">Year:</span> {vinLookupData.year}</div>
-                        <div><span className="text-green-700 font-medium">Trim:</span> {vinLookupData.trim || 'Not specified'}</div>
-                        <div><span className="text-green-700 font-medium">Engine:</span> {vinLookupData.engine}</div>
-                        <div><span className="text-green-700 font-medium">Fuel Type:</span> {vinLookupData.fuelType}</div>
-                      </div>
-                      <div className="space-y-2">
-                        <div><span className="text-green-700 font-medium">Model:</span> {vinLookupData.model}</div>
-                        <div><span className="text-green-700 font-medium">Body Type:</span> {vinLookupData.bodyType}</div>
-                        {vinLookupData.bodyType === 'Truck' ? (
-                          <div><span className="text-green-700 font-medium">Cab Size:</span> {vinLookupData.cabSize || 'Not specified'}</div>
-                        ) : (
-                          <div><span className="text-green-700 font-medium">Doors:</span> {vinLookupData.doors}</div>
-                        )}
-                        <div><span className="text-green-700 font-medium">Transmission:</span> {vinLookupData.transmission}</div>
-                        <div><span className="text-green-700 font-medium">Drivetrain:</span> {vinLookupData.drivetrain}</div>
-                      </div>
-                    </div>
-                  </div>
+                   <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                     <h3 className="text-green-800 font-semibold mb-3">Vehicle Found!</h3>
+                     <div className="grid grid-cols-2 gap-4">
+                       <div className="space-y-2">
+                         <div><span className="text-green-700 font-medium">Make:</span> {vinLookupData.make}</div>
+                         <div><span className="text-green-700 font-medium">Year:</span> {vinLookupData.year}</div>
+                         <div><span className="text-green-700 font-medium">Trim:</span> {vinLookupData.trim || 'Not specified'}</div>
+                         <div><span className="text-green-700 font-medium">Engine:</span> {vinLookupData.engine}</div>
+                         <div><span className="text-green-700 font-medium">Fuel Type:</span> {vinLookupData.fuelType}</div>
+                       </div>
+                       <div className="space-y-2">
+                         <div><span className="text-green-700 font-medium">Model:</span> {vinLookupData.model}</div>
+                         <div><span className="text-green-700 font-medium">Body Type:</span> {vinLookupData.bodyType}</div>
+                         {vinLookupData.bodyType === 'Truck' ? (
+                           <div><span className="text-green-700 font-medium">Cab Size:</span> {vinLookupData.cabSize || 'Not specified'}</div>
+                         ) : (
+                           <div><span className="text-green-700 font-medium">Doors:</span> {vinLookupData.doors}</div>
+                         )}
+                         <div><span className="text-green-700 font-medium">Transmission:</span> {vinLookupData.transmission}</div>
+                         <div><span className="text-green-700 font-medium">Drivetrain:</span> {vinLookupData.drivetrain}</div>
+                       </div>
+                     </div>
+                   </div>
+                   <p className="text-sm text-gray-500 italic mb-6">
+                     If any of this data appears wrong, you can correct it on the next page.
+                   </p>
                 </>
               )}
             </div>
@@ -438,10 +467,10 @@ export function StepByStepForm() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Price (USD) *</label>
                 <Input
-                  type="number"
+                  type="text"
                   value={formData.price}
-                  onChange={(e) => updateFormData('price', parseInt(e.target.value))}
-                  min="1"
+                  onChange={(e) => updateFormData('price', parseInt(e.target.value) || 0)}
+                  placeholder="e.g., 25000"
                   required
                 />
               </div>
@@ -449,10 +478,10 @@ export function StepByStepForm() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Mileage *</label>
                 <Input
-                  type="number"
+                  type="text"
                   value={formData.mileage}
-                  onChange={(e) => updateFormData('mileage', parseInt(e.target.value))}
-                  min="0"
+                  onChange={(e) => updateFormData('mileage', parseInt(e.target.value) || 0)}
+                  placeholder="e.g., 50000"
                   required
                 />
               </div>
@@ -478,60 +507,33 @@ export function StepByStepForm() {
             </div>
 
             <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Title *</label>
+              <Select
+                value={formData.title}
+                onValueChange={(value: any) => updateFormData('title', value)}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {titles.map((title) => (
+                    <SelectItem key={title} value={title}>
+                      {title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Description *</label>
               <Textarea
                 value={formData.description}
                 onChange={(e) => updateFormData('description', e.target.value)}
                 rows={4}
-                placeholder="Describe your vehicle, any modifications, features, or issues..."
+                placeholder="Describe your vehicle, any modifications, features, or issues... Please no contact info here, that will be added later."
                 required
               />
-            </div>
-
-            <div className="space-y-3">
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="cleanTitle"
-                  checked={formData.isCleanTitle}
-                  onCheckedChange={(checked) => updateFormData('isCleanTitle', checked)}
-                />
-                <label htmlFor="cleanTitle" className="text-sm font-medium text-gray-700">
-                  Clean title (no salvage, rebuilt, or branded title)
-                </label>
-              </div>
-              
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="noAccidents"
-                  checked={!formData.hasAccident}
-                  onCheckedChange={(checked) => updateFormData('hasAccident', !checked)}
-                />
-                <label htmlFor="noAccidents" className="text-sm font-medium text-gray-700">
-                  No accident history
-                </label>
-              </div>
-              
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="maintenanceRecords"
-                  checked={formData.hasMaintenanceRecords}
-                  onCheckedChange={(checked) => updateFormData('hasMaintenanceRecords', checked)}
-                />
-                <label htmlFor="maintenanceRecords" className="text-sm font-medium text-gray-700">
-                  Maintenance records available
-                </label>
-              </div>
-              
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="certified"
-                  checked={formData.isCertified}
-                  onCheckedChange={(checked) => updateFormData('isCertified', checked)}
-                />
-                <label htmlFor="certified" className="text-sm font-medium text-gray-700">
-                  Certified pre-owned or similar certification
-                </label>
-              </div>
             </div>
           </div>
         )
@@ -544,59 +546,46 @@ export function StepByStepForm() {
               <p className="text-gray-600">Where is your vehicle located?</p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Country *</label>
-                <Select
-                  value={formData.country}
-                  onValueChange={(value: any) => updateFormData('country', value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="US">United States</SelectItem>
-                    <SelectItem value="CA">Canada</SelectItem>
-                    <SelectItem value="MX">Mexico</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">State/Province *</label>
-                <Select
-                  value={formData.state}
-                  onValueChange={(value) => updateFormData('state', value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select state" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {locationOptions[formData.country as keyof typeof locationOptions]?.map((state) => (
-                      <SelectItem key={state} value={state}>
-                        {state}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">City *</label>
-                <Input
-                  value={formData.city}
-                  onChange={(e) => updateFormData('city', e.target.value)}
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Postal Code</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">ZIP Code *</label>
                 <Input
                   value={formData.postalCode}
-                  onChange={(e) => updateFormData('postalCode', e.target.value)}
-                  placeholder="Optional"
+                  onChange={(e) => {
+                    updateFormData('postalCode', e.target.value)
+                    if (e.target.value.length === 5) {
+                      handleZipLookup(e.target.value)
+                    }
+                  }}
+                  placeholder="e.g., 85001"
+                  maxLength={5}
+                  required
                 />
+                {zipLookupLoading && (
+                  <p className="text-sm text-blue-600 mt-1">Looking up location...</p>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">City *</label>
+                  <Input
+                    value={formData.city}
+                    onChange={(e) => updateFormData('city', e.target.value)}
+                    placeholder="Auto-filled from ZIP code"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">State *</label>
+                  <Input
+                    value={formData.state}
+                    onChange={(e) => updateFormData('state', e.target.value)}
+                    placeholder="Auto-filled from ZIP code"
+                    required
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -631,12 +620,13 @@ export function StepByStepForm() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
                 <Input
                   type="tel"
                   value={formData.contactPhone}
                   onChange={(e) => updateFormData('contactPhone', e.target.value)}
-                  placeholder="Optional"
+                  placeholder="e.g., (555) 123-4567"
+                  required
                 />
               </div>
             </div>
