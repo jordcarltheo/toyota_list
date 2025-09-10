@@ -48,7 +48,7 @@ const steps = [
   { id: 3, title: 'Pricing & Condition', icon: CreditCard, description: 'Set price and describe condition' },
   { id: 4, title: 'Location', icon: MapPin, description: 'Where is your vehicle located?' },
   { id: 5, title: 'Contact Info', icon: User, description: 'How can buyers reach you?' },
-  { id: 6, title: 'Photos', icon: Camera, description: 'Upload photos of your vehicle' },
+  { id: 6, title: 'Photos', icon: Camera, description: 'Upload at least 3 photos of your vehicle' },
   { id: 7, title: 'Review & Submit', icon: CheckCircle, description: 'Review your listing and submit' }
 ]
 
@@ -291,7 +291,7 @@ export function StepByStepForm() {
         )
       
       case 6: // Photos
-        return true // Photos are optional for now
+        return formData.photos.length >= 3
       
       case 7: // Review & Submit
         return true // Final step
@@ -350,6 +350,12 @@ export function StepByStepForm() {
         }
         
         return missing5.length > 0 ? `Please fix: ${missing5.join(', ')}` : ''
+      
+      case 6:
+        if (formData.photos.length < 3) {
+          return `Please upload at least 3 photos (${formData.photos.length}/3 uploaded)`
+        }
+        return ''
       
       default:
         return ''
@@ -826,7 +832,8 @@ export function StepByStepForm() {
           <div className="space-y-6">
             <div className="text-center">
               <h2 className="text-2xl font-bold text-gray-900 mb-2">Vehicle Photos</h2>
-              <p className="text-gray-600">Upload photos of your vehicle (up to 10 photos)</p>
+              <p className="text-gray-600">Upload at least 3 photos of your vehicle (up to 10 photos)</p>
+              <p className="text-sm text-gray-500 mt-1">Minimum 3 photos required to proceed</p>
             </div>
             
             {/* Photo Upload Area */}
@@ -855,7 +862,12 @@ export function StepByStepForm() {
             {/* Photo Preview Grid */}
             {photoPreview.length > 0 && (
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-900">Uploaded Photos ({photoPreview.length}/10)</h3>
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Uploaded Photos ({photoPreview.length}/10)
+                  {photoPreview.length < 3 && (
+                    <span className="text-red-500 text-sm ml-2">- Need {3 - photoPreview.length} more</span>
+                  )}
+                </h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {photoPreview.map((preview, index) => (
                     <div key={index} className="relative group">
