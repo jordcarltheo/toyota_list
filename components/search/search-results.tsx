@@ -84,7 +84,7 @@ export function SearchResults({ filters }: SearchResultsProps) {
           setListings([])
         } else {
           // Transform the data to match our interface
-          const transformedListings: ListingWithPhotos[] = (data || []).map(listing => ({
+          const transformedListings: ListingWithPhotos[] = (data || []).map((listing: any) => ({
             ...listing,
             photos: listing.listing_photos || [],
             seller: listing.profiles || { id: '', full_name: 'Unknown', role: 'user', created_at: '' }
