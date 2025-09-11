@@ -11,11 +11,44 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     
+    // Create a user account first
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+      email: body.contactEmail,
+      password: Math.random().toString(36).slice(-12), // Random password
+      options: {
+        data: {
+          full_name: body.contactName
+        }
+      }
+    })
+
+    if (authError) {
+      return NextResponse.json({ error: `Failed to create account: ${authError.message}` }, { status: 500 })
+    }
+
+    const userId = authData.user?.id
+    if (!userId) {
+      return NextResponse.json({ error: 'Failed to create user account' }, { status: 500 })
+    }
+
+    // Create profile record for the user
+    const { error: profileError } = await supabase
+      .from('profiles')
+      .insert({
+        id: userId,
+        full_name: body.contactName
+      })
+
+    if (profileError) {
+      console.error('Error creating profile:', profileError)
+      // Don't block submission, but log the error
+    }
+    
     // Create the listing using service role (bypasses RLS)
     const { data: listing, error: listingError } = await supabase
       .from('listings')
       .insert({
-        user_id: body.userId || crypto.randomUUID(),
+        user_id: userId,
         title: body.title,
         description: body.description,
         price: body.price,
