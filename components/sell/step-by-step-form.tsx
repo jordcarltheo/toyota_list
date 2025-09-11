@@ -454,7 +454,7 @@ export function StepByStepForm() {
           location_country: formData.country,
           postal_code: formData.postalCode,
           vin: formData.vin,
-          status: 'pending_verification' // Changed to pending verification
+          status: 'draft' // Set to draft until verification
         })
         .select()
         .single()
