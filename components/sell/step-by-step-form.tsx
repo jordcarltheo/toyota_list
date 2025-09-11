@@ -11,6 +11,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Checkbox } from '@/components/ui/checkbox'
 import { lookupVIN, VINData } from '@/lib/vin-lookup'
 import { Search, Car, MapPin, User, Camera, CreditCard, CheckCircle } from 'lucide-react'
+import { createBrowserSupabaseClient } from '@/lib/supabase'
 
 interface ListingFormData {
   vin: string
@@ -404,13 +405,135 @@ export function StepByStepForm() {
     
     setIsSubmitting(true)
     try {
-      // Here you would implement the actual submission logic
-      // For now, we'll just show a success message
+      const supabase = createBrowserSupabaseClient()
+      
+      // First, get the current user
+      const { data: { user }, error: userError } = await supabase.auth.getUser()
+      if (userError || !user) {
+        throw new Error('You must be logged in to submit a listing')
+      }
+
+      // Create the listing
+      const { data: listing, error: listingError } = await supabase
+        .from('listings')
+        .insert({
+          user_id: user.id,
+          title: `${formData.year} ${formData.model} ${formData.trim || ''}`.trim(),
+          description: formData.description,
+          price: formData.price,
+          make: 'Toyota',
+          model: formData.model,
+          year: formData.year,
+          mileage: formData.mileage,
+          condition: formData.condition,
+          body_type: formData.body_type,
+          drivetrain: formData.drivetrain,
+          transmission: formData.transmission,
+          fuel: formData.fuel,
+          location_city: formData.city,
+          location_state: formData.state,
+          location_country: formData.country,
+          postal_code: formData.postalCode,
+          vin: formData.vin,
+          status: 'active'
+        })
+        .select()
+        .single()
+
+      if (listingError) {
+        throw new Error(`Failed to create listing: ${listingError.message}`)
+      }
+
+      // Upload photos if any
+      if (formData.photos.length > 0 && listing) {
+        const photoPromises = formData.photos.map(async (photo, index) => {
+          const fileExt = photo.name.split('.').pop()
+          const fileName = `${listing.id}/${index}.${fileExt}`
+          
+          const { error: uploadError } = await supabase.storage
+            .from('listing-photos')
+            .upload(fileName, photo)
+
+          if (uploadError) {
+            console.error('Error uploading photo:', uploadError)
+            return null
+          }
+
+          // Create photo record
+          const { error: photoError } = await supabase
+            .from('listing_photos')
+            .insert({
+              listing_id: listing.id,
+              path: fileName,
+              width: 800, // Default width
+              height: 600, // Default height
+              sort_order: index
+            })
+
+          if (photoError) {
+            console.error('Error creating photo record:', photoError)
+          }
+        })
+
+        await Promise.all(photoPromises)
+      }
+
+      // Create contact record
+      if (listing) {
+        const { error: contactError } = await supabase
+          .from('listing_contacts')
+          .insert({
+            listing_id: listing.id,
+            phone: formData.contactPhone,
+            email: formData.contactEmail
+          })
+
+        if (contactError) {
+          console.error('Error creating contact record:', contactError)
+        }
+      }
+
       alert('Listing submitted successfully!')
-      // Reset form or redirect as needed
+      
+      // Reset form
+      setFormData({
+        vin: '',
+        year: new Date().getFullYear(),
+        model: '',
+        trim: '',
+        cabSize: '',
+        doors: 4,
+        price: 25000,
+        mileage: 50000,
+        condition: 'Good',
+        title: 'Clean',
+        body_type: 'Sedan',
+        drivetrain: 'FWD',
+        transmission: 'Auto',
+        fuel: 'Gas',
+        description: '',
+        city: '',
+        state: '',
+        postalCode: '',
+        country: 'US',
+        contactName: '',
+        contactEmail: '',
+        contactPhone: '',
+        photos: [],
+        hasAccident: false,
+        isCleanTitle: true,
+        hasMaintenanceRecords: false,
+        isCertified: false
+      })
+      setCurrentStep(1)
+      setPhotoPreview([])
+      setSubmissionCode('')
+      setIsCodeValid(false)
+      setShowCodeEntry(false)
+      
     } catch (error) {
       console.error('Error submitting listing:', error)
-      alert('Error submitting listing. Please try again.')
+      alert(`Error submitting listing: ${error instanceof Error ? error.message : 'Unknown error'}`)
     } finally {
       setIsSubmitting(false)
     }
