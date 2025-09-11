@@ -36,7 +36,7 @@ interface ListingFormData {
   contactName: string
   contactEmail: string
   contactPhone: string
-  verificationMethod: 'email' | 'text' | null
+  verificationMethod: 'email' | null
   photos: File[]
   hasAccident: boolean
   isCleanTitle: boolean
@@ -512,20 +512,44 @@ export function StepByStepForm() {
         }
       }
 
-      // Send verification message
-      const verificationMessage = `Please confirm your Toyota listing by clicking this link: ${window.location.origin}/verify/${listing.id}`
-      
-      if (formData.verificationMethod === 'email') {
-        // In a real app, you'd send an email here
-        console.log('Sending email verification to:', formData.contactEmail)
-        console.log('Verification message:', verificationMessage)
-      } else if (formData.verificationMethod === 'text') {
-        // In a real app, you'd send an SMS here
-        console.log('Sending text verification to:', formData.contactPhone)
-        console.log('Verification message:', verificationMessage)
+      // Create verification token
+      const verificationToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+      const expiresAt = new Date()
+      expiresAt.setHours(expiresAt.getHours() + 24) // Token expires in 24 hours
+
+      const { error: tokenError } = await supabase
+        .from('listing_verification_tokens')
+        .insert({
+          listing_id: listing.id,
+          token: verificationToken,
+          expires_at: expiresAt.toISOString()
+        })
+
+      if (tokenError) {
+        console.error('Error creating verification token:', tokenError)
       }
 
-      alert('Please confirm listing from the text or email that was just sent to you.')
+      // Send verification email
+      if (formData.verificationMethod === 'email') {
+        const verificationUrl = `${window.location.origin}/verify/${listing.id}?token=${verificationToken}`
+        
+        // Use Supabase Auth to send verification email
+        const { error: emailError } = await supabase.auth.resend({
+          type: 'signup',
+          email: formData.contactEmail,
+          options: {
+            emailRedirectTo: verificationUrl
+          }
+        })
+
+        if (emailError) {
+          console.error('Error sending verification email:', emailError)
+          // Fallback: show the verification URL in console for now
+          console.log('Verification URL:', verificationUrl)
+        }
+      }
+
+      alert('Please check your email and click the verification link to activate your listing.')
       
       // Reset form
       setFormData({
@@ -1054,22 +1078,9 @@ export function StepByStepForm() {
                   </label>
                 </div>
                 
-                <div className="flex items-center space-x-3">
-                  <Checkbox
-                    id="verify-text"
-                    checked={formData.verificationMethod === 'text'}
-                    onCheckedChange={(checked) => {
-                      if (checked) {
-                        updateFormData('verificationMethod', 'text')
-                      } else {
-                        updateFormData('verificationMethod', null)
-                      }
-                    }}
-                  />
-                  <label htmlFor="verify-text" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Text verification to {formData.contactPhone || 'your phone'}
-                  </label>
-                </div>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  We&apos;ll send you a verification link to confirm your listing.
+                </p>
               </div>
               
               {!formData.verificationMethod && (
