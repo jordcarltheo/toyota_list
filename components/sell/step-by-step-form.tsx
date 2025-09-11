@@ -413,7 +413,7 @@ export function StepByStepForm() {
       
       // Create the listing first (without user authentication)
       // We'll create a temporary user ID and handle user creation later
-      const tempUserId = `temp_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`
+      const tempUserId = crypto.randomUUID()
       
       const { data: listing, error: listingError } = await supabase
         .from('listings')
