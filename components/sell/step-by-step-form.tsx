@@ -116,6 +116,10 @@ export function StepByStepForm() {
   const [vinLookupError, setVinLookupError] = useState('')
   const [zipLookupLoading, setZipLookupLoading] = useState(false)
   const [photoPreview, setPhotoPreview] = useState<string[]>([])
+  const [submissionCode, setSubmissionCode] = useState('')
+  const [isCodeValid, setIsCodeValid] = useState(false)
+  const [showCodeEntry, setShowCodeEntry] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const progress = (currentStep / steps.length) * 100
 
@@ -123,6 +127,17 @@ export function StepByStepForm() {
   const isValidEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     return emailRegex.test(email)
+  }
+
+  // Code validation function
+  const validateCode = (code: string): boolean => {
+    return code === 'FREEYOTA'
+  }
+
+  // Handle code input change
+  const handleCodeChange = (value: string) => {
+    setSubmissionCode(value)
+    setIsCodeValid(validateCode(value))
   }
 
   // Phone number formatting function
@@ -375,9 +390,29 @@ export function StepByStepForm() {
     }
   }
 
-  const nextStep = () => {
+  const nextStep = async () => {
     if (currentStep < steps.length && validateStep(currentStep)) {
       setCurrentStep(currentStep + 1)
+    } else if (currentStep === steps.length && validateStep(currentStep)) {
+      // This is the final step - show code entry
+      setShowCodeEntry(true)
+    }
+  }
+
+  const handleSubmit = async () => {
+    if (!isCodeValid) return
+    
+    setIsSubmitting(true)
+    try {
+      // Here you would implement the actual submission logic
+      // For now, we'll just show a success message
+      alert('Listing submitted successfully!')
+      // Reset form or redirect as needed
+    } catch (error) {
+      console.error('Error submitting listing:', error)
+      alert('Error submitting listing. Please try again.')
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -982,13 +1017,44 @@ export function StepByStepForm() {
                   </div>
                 </>
               )}
+
+              {/* Code Entry Section */}
+              {showCodeEntry && (
+                <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg">
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Enter Submission Code</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
+                    Enter the code to submit your listing
+                  </p>
+                  <div className="flex gap-2">
+                    <Input
+                      type="text"
+                      placeholder="Enter code"
+                      value={submissionCode}
+                      onChange={(e) => handleCodeChange(e.target.value)}
+                      className={`flex-1 ${isCodeValid ? 'border-green-500' : 'border-gray-300'}`}
+                    />
+                    <Button
+                      onClick={handleSubmit}
+                      disabled={!isCodeValid || isSubmitting}
+                      className={`px-6 ${!isCodeValid ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    >
+                      {isSubmitting ? 'Submitting...' : 'Submit Listing'}
+                    </Button>
+                  </div>
+                  {submissionCode && !isCodeValid && (
+                    <p className="text-red-600 text-sm mt-2">Invalid code. Please try again.</p>
+                  )}
+                </div>
+              )}
             </div>
 
-            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-4">
-              <p className="text-blue-800 dark:text-blue-300 text-sm">
-                <strong>Next:</strong> After submitting, you&apos;ll be redirected to complete payment of the $99 listing fee.
-              </p>
-            </div>
+            {!showCodeEntry && (
+              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-4">
+                <p className="text-blue-800 dark:text-blue-300 text-sm">
+                  <strong>Next:</strong> Click Submit to enter your submission code and complete your listing.
+                </p>
+              </div>
+            )}
           </div>
         )
 
