@@ -36,6 +36,7 @@ interface ListingFormData {
   contactName: string
   contactEmail: string
   contactPhone: string
+  verificationMethod: 'email' | 'text' | null
   photos: File[]
   hasAccident: boolean
   isCleanTitle: boolean
@@ -105,6 +106,7 @@ export function StepByStepForm() {
     contactName: '',
     contactEmail: '',
     contactPhone: '',
+    verificationMethod: null,
     photos: [],
     hasAccident: false,
     isCleanTitle: true,
@@ -307,7 +309,8 @@ export function StepByStepForm() {
           formData.contactEmail && 
           isValidEmail(formData.contactEmail) &&
           formData.contactPhone && 
-          isValidPhoneNumber(formData.contactPhone)
+          isValidPhoneNumber(formData.contactPhone) &&
+          formData.verificationMethod
         )
       
       case 6: // Photos
@@ -369,6 +372,7 @@ export function StepByStepForm() {
         if (!formData.contactName) missing5.push('Full Name')
         if (!formData.contactEmail) missing5.push('Email')
         if (!formData.contactPhone) missing5.push('Phone Number')
+        if (!formData.verificationMethod) missing5.push('Verification Method')
         
         // Check for invalid formats
         if (formData.contactEmail && !isValidEmail(formData.contactEmail)) {
@@ -407,17 +411,32 @@ export function StepByStepForm() {
     try {
       const supabase = createBrowserSupabaseClient()
       
-      // First, get the current user
-      const { data: { user }, error: userError } = await supabase.auth.getUser()
-      if (userError || !user) {
-        throw new Error('You must be logged in to submit a listing')
+      // Create a user account first
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: formData.contactEmail,
+        password: Math.random().toString(36).slice(-12), // Random password
+        options: {
+          data: {
+            full_name: formData.contactName
+          }
+        }
+      })
+
+      if (authError) {
+        throw new Error(`Failed to create account: ${authError.message}`)
+      }
+
+      // Get the user ID
+      const userId = authData.user?.id
+      if (!userId) {
+        throw new Error('Failed to create user account')
       }
 
       // Create the listing
       const { data: listing, error: listingError } = await supabase
         .from('listings')
         .insert({
-          user_id: user.id,
+          user_id: userId,
           title: `${formData.year} ${formData.model} ${formData.trim || ''}`.trim(),
           description: formData.description,
           price: formData.price,
@@ -435,7 +454,7 @@ export function StepByStepForm() {
           location_country: formData.country,
           postal_code: formData.postalCode,
           vin: formData.vin,
-          status: 'active'
+          status: 'pending_verification' // Changed to pending verification
         })
         .select()
         .single()
@@ -493,7 +512,20 @@ export function StepByStepForm() {
         }
       }
 
-      alert('Listing submitted successfully!')
+      // Send verification message
+      const verificationMessage = `Please confirm your Toyota listing by clicking this link: ${window.location.origin}/verify/${listing.id}`
+      
+      if (formData.verificationMethod === 'email') {
+        // In a real app, you'd send an email here
+        console.log('Sending email verification to:', formData.contactEmail)
+        console.log('Verification message:', verificationMessage)
+      } else if (formData.verificationMethod === 'text') {
+        // In a real app, you'd send an SMS here
+        console.log('Sending text verification to:', formData.contactPhone)
+        console.log('Verification message:', verificationMessage)
+      }
+
+      alert('Please confirm listing from the text or email that was just sent to you.')
       
       // Reset form
       setFormData({
@@ -519,6 +551,7 @@ export function StepByStepForm() {
         contactName: '',
         contactEmail: '',
         contactPhone: '',
+        verificationMethod: null,
         photos: [],
         hasAccident: false,
         isCleanTitle: true,
@@ -994,6 +1027,54 @@ export function StepByStepForm() {
                   <p className="text-red-500 text-sm mt-1">Please enter a valid 10-digit phone number</p>
                 )}
               </div>
+            </div>
+
+            {/* Verification Method Selection */}
+            <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">Verification Method</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+                Check the box for how you&apos;d like to verify your listing:
+              </p>
+              
+              <div className="space-y-3">
+                <div className="flex items-center space-x-3">
+                  <Checkbox
+                    id="verify-email"
+                    checked={formData.verificationMethod === 'email'}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        updateFormData('verificationMethod', 'email')
+                      } else {
+                        updateFormData('verificationMethod', null)
+                      }
+                    }}
+                  />
+                  <label htmlFor="verify-email" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Email verification to {formData.contactEmail || 'your email'}
+                  </label>
+                </div>
+                
+                <div className="flex items-center space-x-3">
+                  <Checkbox
+                    id="verify-text"
+                    checked={formData.verificationMethod === 'text'}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        updateFormData('verificationMethod', 'text')
+                      } else {
+                        updateFormData('verificationMethod', null)
+                      }
+                    }}
+                  />
+                  <label htmlFor="verify-text" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Text verification to {formData.contactPhone || 'your phone'}
+                  </label>
+                </div>
+              </div>
+              
+              {!formData.verificationMethod && (
+                <p className="text-red-500 text-sm mt-2">Please select a verification method</p>
+              )}
             </div>
           </div>
         )
