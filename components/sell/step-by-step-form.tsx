@@ -411,32 +411,14 @@ export function StepByStepForm() {
     try {
       const supabase = createBrowserSupabaseClient()
       
-      // Create a user account first
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: formData.contactEmail,
-        password: Math.random().toString(36).slice(-12), // Random password
-        options: {
-          data: {
-            full_name: formData.contactName
-          }
-        }
-      })
-
-      if (authError) {
-        throw new Error(`Failed to create account: ${authError.message}`)
-      }
-
-      // Get the user ID
-      const userId = authData.user?.id
-      if (!userId) {
-        throw new Error('Failed to create user account')
-      }
-
-      // Create the listing
+      // Create the listing first (without user authentication)
+      // We'll create a temporary user ID and handle user creation later
+      const tempUserId = `temp_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`
+      
       const { data: listing, error: listingError } = await supabase
         .from('listings')
         .insert({
-          user_id: userId,
+          user_id: tempUserId,
           title: `${formData.year} ${formData.model} ${formData.trim || ''}`.trim(),
           description: formData.description,
           price: formData.price,
@@ -461,6 +443,28 @@ export function StepByStepForm() {
 
       if (listingError) {
         throw new Error(`Failed to create listing: ${listingError.message}`)
+      }
+
+      // Now create the user account
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: formData.contactEmail,
+        password: Math.random().toString(36).slice(-12), // Random password
+        options: {
+          data: {
+            full_name: formData.contactName
+          }
+        }
+      })
+
+      if (authError) {
+        console.error('Failed to create user account:', authError)
+        // Don't throw error here - listing was created successfully
+      } else if (authData.user?.id) {
+        // Update the listing with the real user ID
+        await supabase
+          .from('listings')
+          .update({ user_id: authData.user.id })
+          .eq('id', listing.id)
       }
 
       // Upload photos if any
