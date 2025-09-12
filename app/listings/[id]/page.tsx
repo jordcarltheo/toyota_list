@@ -23,7 +23,7 @@ interface ListingPageProps {
 
 export default async function ListingPage({ params }: ListingPageProps) {
   // Check if environment variables are set
-  if (!process.env.SUPABASE_URL && !process.env.NEXT_PUBLIC_SUPABASE_URL) {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     notFound()
   }
 
@@ -110,13 +110,13 @@ export default async function ListingPage({ params }: ListingPageProps) {
                   .map((photo: ListingPhoto) => (
                     <div key={photo.id} className="relative group">
                                               <img
-                          src={`${process.env.SUPABASE_URL || 'https://your-project.supabase.co'}/storage/v1/object/public/listing-photos/${photo.path}`}
+                          src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/listing-photos/${photo.path}`}
                           alt={`Vehicle photo`}
                           className="w-full h-48 object-cover rounded-lg shadow-md hover:shadow-lg transition-shadow"
                           onError={(e) => {
                             // Fallback if image fails to load
                             const target = e.target as HTMLImageElement;
-                            target.style.display = 'none';
+                            target.src = '/placeholder-car.jpg';
                           }}
                         />
                     </div>

@@ -134,9 +134,16 @@ export function SearchResults({ filters }: SearchResultsProps) {
         <Card key={listing.id} className="overflow-hidden hover:shadow-lg transition-shadow">
           <div className="relative">
             <img
-              src={listing.photos[0]?.path || '/placeholder-car.jpg'}
+              src={listing.photos[0]?.path 
+                ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/listing-photos/${listing.photos[0].path}`
+                : '/placeholder-car.jpg'
+              }
               alt={listing.title}
               className="w-full h-48 object-cover"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = '/placeholder-car.jpg';
+              }}
             />
             {listing.featured && (
               <Badge className="absolute top-2 right-2 bg-amber-500">
