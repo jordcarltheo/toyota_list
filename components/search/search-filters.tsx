@@ -30,23 +30,14 @@ interface SearchFiltersProps {
 }
 
 const toyotaModels = [
-  // 1950s-1960s Models
-  'Crown', 'Corona', 'Corolla', 'Publica', 'Sports 800', '2000GT', 'Celica', 'Carina', 'Mark II', 'Cressida', 'Century', 'Crown Comfort', 'Comfort', 'Hiace', 'Dyna', 'Coaster', 'Land Cruiser', 'Stout', 'Tacoma', 'Hilux',
-  
-  // 1970s-1980s Models
-  'Camry', 'Avalon', 'Prius', 'RAV4', 'Highlander', '4Runner', 'Tacoma', 'Tundra', 'Sienna', 'C-HR', 'Venza', 'bZ4X', 'GR86', 'GR Corolla', 'GR Supra', 'GR Yaris', 'Matrix', 'Yaris', 'Yaris Hatchback', 'MR2', 'Tercel', 'Paseo', 'Echo', 'Scion tC', 'Scion xB', 'Scion xD', 'FJ Cruiser', 'Sequoia', 'Lexus ES', 'Lexus IS', 'Lexus LS', 'Lexus LC', 'Lexus RC', 'Lexus UX', 'Lexus NX', 'Lexus RX', 'Lexus GX', 'Lexus LX',
-  
-  // Hybrid Models
-  'Camry Hybrid', 'Corolla Hybrid', 'RAV4 Hybrid', 'Highlander Hybrid', 'Sienna Hybrid', 'Prius Prime', 'RAV4 Prime',
-  
-  // Electric Models
-  'bZ4X AWD',
-  
-  // Performance Models
-  'GR86', 'GR Corolla', 'GR Supra', 'GR Yaris',
+  // Current Production Models
+  'Camry', 'Camry Hybrid', 'Corolla', 'Corolla Hybrid', 'Prius', 'Prius Prime', 'RAV4', 'RAV4 Hybrid', 'RAV4 Prime', 'Highlander', 'Highlander Hybrid', '4Runner', 'Tacoma', 'Tundra', 'Sienna', 'Sienna Hybrid', 'C-HR', 'Venza', 'bZ4X', 'bZ4X AWD', 'GR86', 'GR Corolla', 'GR Supra', 'GR Yaris',
   
   // Discontinued Models (Still Common in Market)
-  'Avalon', 'C-HR', 'FJ Cruiser', 'Sequoia', 'Land Cruiser', 'Matrix', 'Yaris', 'Yaris Hatchback', 'Celica', 'MR2', 'Tercel', 'Paseo', 'Echo', 'Scion tC', 'Scion xB', 'Scion xD',
+  'Avalon', 'FJ Cruiser', 'Sequoia', 'Land Cruiser', 'Matrix', 'Yaris', 'Yaris Hatchback', 'Celica', 'MR2', 'Tercel', 'Paseo', 'Echo', 'Crown', 'Corona', 'Publica', 'Sports 800', '2000GT', 'Carina', 'Mark II', 'Cressida', 'Century', 'Crown Comfort', 'Comfort', 'Hiace', 'Dyna', 'Coaster', 'Stout', 'Hilux',
+  
+  // Scion Models
+  'Scion tC', 'Scion xB', 'Scion xD',
   
   // Lexus Models
   'Lexus ES', 'Lexus IS', 'Lexus LS', 'Lexus LC', 'Lexus RC', 'Lexus UX', 'Lexus NX', 'Lexus RX', 'Lexus GX', 'Lexus LX'
