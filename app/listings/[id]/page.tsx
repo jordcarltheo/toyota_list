@@ -17,10 +17,6 @@ interface ListingPageProps {
   params: { id: string }
 }
 
-interface ListingPageProps {
-  params: { id: string }
-}
-
 export default async function ListingPage({ params }: ListingPageProps) {
   // Check if environment variables are set
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
@@ -63,14 +59,26 @@ export default async function ListingPage({ params }: ListingPageProps) {
     notFound()
   }
 
-  // Format price from cents to dollars
-  const priceInDollars = (listing.price / 100).toLocaleString('en-US', {
-    style: 'currency',
-    currency: 'USD'
-  })
+  // Format price - check if it's already in dollars or cents
+  const priceInDollars = listing?.price 
+    ? (listing.price > 10000 
+        ? (listing.price / 100).toLocaleString('en-US', {
+            style: 'currency',
+            currency: 'USD'
+          })
+        : listing.price.toLocaleString('en-US', {
+            style: 'currency',
+            currency: 'USD'
+          }))
+    : 'Price not available'
 
   // Format mileage
-  const formattedMileage = listing.mileage?.toLocaleString() || 'N/A'
+  const formattedMileage = listing?.mileage?.toLocaleString() || 'N/A'
+
+  // If no listing found, return 404
+  if (!listing) {
+    notFound()
+  }
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -113,11 +121,6 @@ export default async function ListingPage({ params }: ListingPageProps) {
                           src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/listing-photos/${photo.path}`}
                           alt={`Vehicle photo`}
                           className="w-full h-48 object-cover rounded-lg shadow-md hover:shadow-lg transition-shadow"
-                          onError={(e) => {
-                            // Fallback if image fails to load
-                            const target = e.target as HTMLImageElement;
-                            target.src = '/placeholder-car.jpg';
-                          }}
                         />
                     </div>
                   ))}
