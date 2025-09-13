@@ -80,6 +80,7 @@ const locationOptions = {
 }
 
 export function SearchFilters({ filters, setFilters }: SearchFiltersProps) {
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
   const [localFilters, setLocalFilters] = useState({
     ...filters,
     model: filters.model || 'all',
@@ -137,7 +138,7 @@ export function SearchFilters({ filters, setFilters }: SearchFiltersProps) {
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg">Filters</CardTitle>
+          <CardTitle className="text-lg">Search Filters</CardTitle>
           {hasActiveFilters && (
             <Button
               variant="ghost"
@@ -146,266 +147,216 @@ export function SearchFilters({ filters, setFilters }: SearchFiltersProps) {
               className="text-gray-500 hover:text-gray-700"
             >
               <X className="h-4 w-4 mr-1" />
-              Clear
+              Clear All
             </Button>
           )}
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
-        {/* Model */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Model
-          </label>
-          <Select
-            value={localFilters.model}
-            onValueChange={(value) => handleFilterChange('model', value)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="All Models" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Models</SelectItem>
-              {toyotaModels.map((model) => (
-                <SelectItem key={model} value={model}>
-                  {model}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Year Range */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Year Range
-          </label>
-          <div className="grid grid-cols-2 gap-2">
-            <Input
-              placeholder="Min"
-              value={localFilters.year_min}
-              onChange={(e) => handleFilterChange('year_min', e.target.value)}
-              type="number"
-              min="1900"
-              max="2024"
-            />
-            <Input
-              placeholder="Max"
-              value={localFilters.year_max}
-              onChange={(e) => handleFilterChange('year_max', e.target.value)}
-              type="number"
-              min="1900"
-              max="2024"
-            />
-          </div>
-        </div>
-
-        {/* Price Range */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Price Range ($)
-          </label>
-          <div className="grid grid-cols-2 gap-2">
-            <Input
-              placeholder="Min"
-              value={localFilters.price_min}
-              onChange={(e) => handleFilterChange('price_min', e.target.value)}
-              type="number"
-              min="0"
-            />
-            <Input
-              placeholder="Max"
-              value={localFilters.price_max}
-              onChange={(e) => handleFilterChange('price_max', e.target.value)}
-              type="number"
-              min="0"
-            />
-          </div>
-        </div>
-
-        {/* Max Mileage */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Max Mileage
-          </label>
-          <Input
-            placeholder="e.g., 100000"
-            value={localFilters.mileage_max}
-            onChange={(e) => handleFilterChange('mileage_max', e.target.value)}
-            type="number"
-            min="0"
-          />
-        </div>
-
-        {/* Body Type */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Body Type
-          </label>
-          <Select
-            value={localFilters.body_type}
-            onValueChange={(value) => handleFilterChange('body_type', value)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="All Body Types" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Body Types</SelectItem>
-              {bodyTypes.map((type) => (
-                <SelectItem key={type} value={type}>
-                  {type}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Drivetrain */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Drivetrain
-          </label>
-          <Select
-            value={localFilters.drivetrain}
-            onValueChange={(value) => handleFilterChange('drivetrain', value)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="All Drivetrains" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Drivetrains</SelectItem>
-              {drivetrains.map((type) => (
-                <SelectItem key={type} value={type}>
-                  {type}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Transmission */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Transmission
-          </label>
-          <Select
-            value={localFilters.transmission}
-            onValueChange={(value) => handleFilterChange('transmission', value)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="All Transmissions" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Transmissions</SelectItem>
-              {transmissions.map((type) => (
-                <SelectItem key={type} value={type}>
-                  {type}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Fuel Type */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Fuel Type
-          </label>
-          <Select
-            value={localFilters.fuel}
-            onValueChange={(value) => handleFilterChange('fuel', value)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="All Fuel Types" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Fuel Types</SelectItem>
-              {fuels.map((type) => (
-                <SelectItem key={type} value={type}>
-                  {type}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Condition */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Condition
-          </label>
-          <Select
-            value={localFilters.condition}
-            onValueChange={(value) => handleFilterChange('condition', value)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="All Conditions" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Conditions</SelectItem>
-              {conditions.map((condition) => (
-                <SelectItem key={condition} value={condition}>
-                  {condition}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Location Search */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Location
-          </label>
-          
-          {/* Country */}
-          <div className="mb-3">
+      <CardContent className="space-y-6">
+        {/* Primary Filters - Always Visible */}
+        <div className="space-y-4">
+          {/* Model */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Model
+            </label>
             <Select
-              value={localFilters.location_country}
-              onValueChange={(value) => handleFilterChange('location_country', value)}
+              value={localFilters.model}
+              onValueChange={(value) => handleFilterChange('model', value)}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select Country" />
+                <SelectValue placeholder="All Models" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Countries</SelectItem>
-                <SelectItem value="US">United States</SelectItem>
-                <SelectItem value="CA">Canada</SelectItem>
-                <SelectItem value="MX">Mexico</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* State/Province */}
-          <div className="mb-3">
-            <Select
-              value={localFilters.location_state}
-              onValueChange={(value) => handleFilterChange('location_state', value)}
-              disabled={!localFilters.location_country}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder={localFilters.location_country ? "Select State/Province" : "Select Country First"} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All States/Provinces</SelectItem>
-                {localFilters.location_country && locationOptions[localFilters.location_country as keyof typeof locationOptions]?.map((state) => (
-                  <SelectItem key={state} value={state}>
-                    {state}
+                <SelectItem value="all">All Models</SelectItem>
+                {toyotaModels.map((model) => (
+                  <SelectItem key={model} value={model}>
+                    {model}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
 
-          {/* City */}
-          <div className="mb-3">
-            <Input
-              placeholder="City (e.g., Phoenix, Toronto, Guadalajara)"
-              value={localFilters.location_city}
-              onChange={(e) => handleFilterChange('location_city', e.target.value)}
-            />
+          {/* Price Range */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Price Range ($)
+            </label>
+            <div className="grid grid-cols-2 gap-2">
+              <Input
+                placeholder="Min"
+                value={localFilters.price_min}
+                onChange={(e) => handleFilterChange('price_min', e.target.value)}
+                type="number"
+                min="0"
+              />
+              <Input
+                placeholder="Max"
+                value={localFilters.price_max}
+                onChange={(e) => handleFilterChange('price_max', e.target.value)}
+                type="number"
+                min="0"
+              />
+            </div>
           </div>
         </div>
+
+        {/* More Filters Button */}
+        <div className="border-t pt-4">
+          <Button
+            variant="outline"
+            onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+            className="w-full"
+          >
+            {showAdvancedFilters ? 'Hide' : 'Show'} More Filters
+          </Button>
+        </div>
+
+        {/* Advanced Filters - Collapsible */}
+        {showAdvancedFilters && (
+          <div className="space-y-4 border-t pt-4">
+            {/* Year Range */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Year Range
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                <Input
+                  placeholder="Min"
+                  value={localFilters.year_min}
+                  onChange={(e) => handleFilterChange('year_min', e.target.value)}
+                  type="number"
+                  min="1900"
+                  max="2024"
+                />
+                <Input
+                  placeholder="Max"
+                  value={localFilters.year_max}
+                  onChange={(e) => handleFilterChange('year_max', e.target.value)}
+                  type="number"
+                  min="1900"
+                  max="2024"
+                />
+              </div>
+            </div>
+
+            {/* Max Mileage */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Max Mileage
+              </label>
+              <Input
+                placeholder="e.g., 100000"
+                value={localFilters.mileage_max}
+                onChange={(e) => handleFilterChange('mileage_max', e.target.value)}
+                type="number"
+                min="0"
+              />
+            </div>
+
+            {/* Body Type */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Body Type
+              </label>
+              <Select
+                value={localFilters.body_type}
+                onValueChange={(value) => handleFilterChange('body_type', value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="All Body Types" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Body Types</SelectItem>
+                  {bodyTypes.map((type) => (
+                    <SelectItem key={type} value={type}>
+                      {type}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Condition */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Condition
+              </label>
+              <Select
+                value={localFilters.condition}
+                onValueChange={(value) => handleFilterChange('condition', value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="All Conditions" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Conditions</SelectItem>
+                  {conditions.map((condition) => (
+                    <SelectItem key={condition} value={condition}>
+                      {condition}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Location Search */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Location
+              </label>
+              
+              {/* Country */}
+              <div className="mb-3">
+                <Select
+                  value={localFilters.location_country}
+                  onValueChange={(value) => handleFilterChange('location_country', value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Country" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Countries</SelectItem>
+                    <SelectItem value="US">United States</SelectItem>
+                    <SelectItem value="CA">Canada</SelectItem>
+                    <SelectItem value="MX">Mexico</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* State/Province */}
+              <div className="mb-3">
+                <Select
+                  value={localFilters.location_state}
+                  onValueChange={(value) => handleFilterChange('location_state', value)}
+                  disabled={!localFilters.location_country || localFilters.location_country === 'all'}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={localFilters.location_country && localFilters.location_country !== 'all' ? "Select State/Province" : "Select Country First"} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All States/Provinces</SelectItem>
+                    {localFilters.location_country && localFilters.location_country !== 'all' && locationOptions[localFilters.location_country as keyof typeof locationOptions]?.map((state) => (
+                      <SelectItem key={state} value={state}>
+                        {state}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* City */}
+              <div className="mb-3">
+                <Input
+                  placeholder="City (e.g., Phoenix, Toronto, Guadalajara)"
+                  value={localFilters.location_city}
+                  onChange={(e) => handleFilterChange('location_city', e.target.value)}
+                />
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Apply Filters Button */}
         <Button onClick={applyFilters} className="w-full">
